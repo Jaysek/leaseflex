@@ -59,6 +59,7 @@ export default function OfferForm() {
         const parsed = JSON.parse(stored);
         setForm((prev) => ({
           ...prev,
+          full_name: parsed.tenant_name || prev.full_name,
           monthly_rent: parsed.monthly_rent?.toString() || prev.monthly_rent,
           address: parsed.address || prev.address,
           city: parsed.city || prev.city,
@@ -117,6 +118,7 @@ export default function OfferForm() {
       const parsed = data.parsed;
       setForm((prev) => ({
         ...prev,
+        full_name: parsed.tenant_name || prev.full_name,
         monthly_rent: parsed.monthly_rent?.toString() || prev.monthly_rent,
         address: parsed.address || prev.address,
         city: parsed.city || prev.city,

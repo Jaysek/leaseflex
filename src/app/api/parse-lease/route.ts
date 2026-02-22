@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
 interface ParsedLease {
+  tenant_name?: string;
   monthly_rent?: number;
   address?: string;
   city?: string;
@@ -14,6 +15,7 @@ interface ParsedLease {
 
 const EXTRACTION_PROMPT = `You are extracting key lease terms from a lease agreement document. Analyze the document and return a JSON object with these fields:
 
+- tenant_name: string (the tenant's full name, e.g. "Sophia Tawil")
 - monthly_rent: number (the monthly rent amount, e.g. 2300)
 - address: string (the rental property street address, e.g. "339 East 9th Street, Apt. 4B")
 - city: string (the city, e.g. "New York")
@@ -96,6 +98,9 @@ export async function POST(request: NextRequest) {
     // Map and validate into ParsedLease
     const parsed: ParsedLease = {};
 
+    if (typeof extracted.tenant_name === 'string' && extracted.tenant_name.length > 0) {
+      parsed.tenant_name = extracted.tenant_name;
+    }
     if (typeof extracted.monthly_rent === 'number' && extracted.monthly_rent >= 500 && extracted.monthly_rent <= 50000) {
       parsed.monthly_rent = extracted.monthly_rent;
     }
