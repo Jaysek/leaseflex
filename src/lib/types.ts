@@ -17,6 +17,7 @@ export interface QuoteInput {
 export interface OfferPayload {
   id?: string;
   created_at?: string;
+  full_name?: string | null;
   email?: string | null;
   monthly_rent: number;
   address: string;

@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import {
   ArrowRight,
-  Timer,
   Shield,
+  ShieldX,
+  ShieldCheck,
   Clock,
   DollarSign,
   AlertTriangle,
@@ -111,6 +112,8 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
   };
 
   const totalLiability = offer.months_remaining * offer.monthly_rent;
+  const terminationFee = offer.termination_fee_amount || 0;
+  const totalExposure = totalLiability + terminationFee;
   const annualCost = offer.monthly_price * Math.min(offer.months_remaining, 12);
 
   const faqs = [
@@ -159,7 +162,7 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
           </div>
         </div>
         <p className="mt-6 text-xs text-neutral-400">
-          Your rate is locked. No card was charged.
+          No card was charged.
         </p>
       </div>
     );
@@ -237,80 +240,72 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
   return (
     <>
       <div className="space-y-8">
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900 text-white rounded-full text-xs font-medium">
-            <Timer className="w-3.5 h-3.5" />
-            Rate locked for 48 hours
+        {/* Badges — only contextual ones */}
+        {(offer.requires_manual_review || offer.requires_concierge) && (
+          <div className="flex flex-wrap gap-2">
+            {offer.requires_manual_review && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-xs font-medium">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Manual review required
+              </div>
+            )}
+            {offer.requires_concierge && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
+                <Phone className="w-3.5 h-3.5" />
+                Concierge review
+              </div>
+            )}
           </div>
-          {offer.requires_manual_review && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-xs font-medium">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              Manual review required
-            </div>
-          )}
-          {offer.requires_concierge && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
-              <Phone className="w-3.5 h-3.5" />
-              Concierge review
-            </div>
-          )}
-        </div>
+        )}
 
-        {/* Price Hero — animated */}
-        <div className="text-center py-6 border-b border-neutral-100">
-          <p className="text-xs font-medium text-neutral-400 uppercase tracking-widest mb-3">
-            Your monthly rate
-          </p>
-          <div className="flex items-baseline gap-1.5 justify-center">
-            <AnimatedNumber
-              value={offer.monthly_price}
-              prefix="$"
-              className="text-6xl font-bold tracking-tight text-neutral-900"
-            />
-            <span className="text-xl text-neutral-400 font-light">/mo</span>
-          </div>
-          <p className="text-sm text-neutral-400 mt-3">
-            {offer.city}, {offer.state} &middot; ${offer.monthly_rent.toLocaleString()}/mo rent
-          </p>
-        </div>
-
-        {/* Cost Comparison */}
-        <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-4">
-            Why it&apos;s worth it
-          </h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 sm:p-5">
-              <p className="text-[11px] font-medium text-neutral-400 uppercase tracking-wider mb-3">
+        {/* Without vs With LeaseFlex comparison */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Without */}
+          <div className="rounded-xl border border-red-200/60 bg-red-50/40 p-4 sm:p-5">
+            <div className="flex items-center gap-1.5 mb-4">
+              <ShieldX className="w-3.5 h-3.5 text-red-400" />
+              <p className="text-[11px] font-semibold text-red-400 uppercase tracking-wider">
                 Without LeaseFlex
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-neutral-900">
-                <AnimatedNumber value={totalLiability} prefix="$" locale />
+            </div>
+            <p className="text-2xl sm:text-3xl font-bold text-red-600 tabular-nums">
+              <AnimatedNumber value={totalExposure} prefix="$" locale />
+            </p>
+            <div className="mt-3 space-y-1">
+              <p className="text-xs text-neutral-500">
+                ${(totalLiability).toLocaleString()} remaining rent
               </p>
-              <p className="text-xs text-neutral-400 mt-1.5">
-                in remaining rent obligations
-              </p>
-              {offer.termination_fee_amount && (
-                <p className="text-xs text-neutral-400 mt-0.5">
-                  + ${offer.termination_fee_amount.toLocaleString()} termination fee
+              {terminationFee > 0 && (
+                <p className="text-xs text-neutral-500">
+                  + ${terminationFee.toLocaleString()} termination fee
                 </p>
               )}
             </div>
-            <div className="rounded-xl border border-neutral-900 bg-neutral-900 p-4 sm:p-5">
-              <p className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-3">
+            <p className="text-xs text-red-400 mt-2">
+              Due out of pocket
+            </p>
+          </div>
+
+          {/* With */}
+          <div className="rounded-xl border-2 border-emerald-600 bg-emerald-50/40 p-4 sm:p-5 relative">
+            <div className="absolute -top-2.5 right-3 px-2 py-0.5 bg-emerald-600 text-white text-[9px] font-semibold uppercase tracking-wider rounded">
+              Protected
+            </div>
+            <div className="flex items-center gap-1.5 mb-4">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider">
                 With LeaseFlex
               </p>
-              <p className="text-2xl sm:text-3xl font-bold text-white">
-                <AnimatedNumber value={annualCost} prefix="$" locale />
-              </p>
-              <p className="text-xs text-neutral-500 mt-1.5">
-                total for {Math.min(offer.months_remaining, 12)} months of coverage
-              </p>
-              <p className="text-xs font-medium text-emerald-400 mt-0.5">
-                You save up to ${(totalLiability - annualCost).toLocaleString()}
-              </p>
             </div>
+            <p className="text-2xl sm:text-3xl font-bold text-emerald-600 tabular-nums">
+              <AnimatedNumber value={annualCost} prefix="$" locale />
+            </p>
+            <p className="text-xs text-neutral-500 mt-3">
+              ${offer.monthly_price}/mo &times; {Math.min(offer.months_remaining, 12)} months
+            </p>
+            <p className="text-xs font-medium text-emerald-600 mt-2">
+              Save up to ${(totalExposure - annualCost).toLocaleString()}
+            </p>
           </div>
         </div>
 
@@ -343,7 +338,7 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
             <div className="bg-white p-4 sm:p-5">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Clock className="w-3.5 h-3.5 text-neutral-300" />
-                <span className="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">Activation</span>
+                <span className="text-[11px] font-medium text-neutral-400 uppercase tracking-wider">Waiting period</span>
               </div>
               <p className="text-xl font-semibold text-neutral-900">
                 {offer.waiting_period_days} days

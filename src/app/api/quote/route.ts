@@ -6,14 +6,16 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as QuoteInput;
+    const body = await request.json();
+    const { full_name, email, job_title, ...quoteFields } = body;
 
-    const errors = validateQuoteInput(body);
+    const errors = validateQuoteInput(quoteFields as QuoteInput);
     if (errors.length > 0) {
       return NextResponse.json({ errors }, { status: 400 });
     }
 
-    const offer = generateOffer(body);
+    const offer = generateOffer(quoteFields as QuoteInput);
+    offer.full_name = full_name || null;
 
     // Always generate a fallback ID
     offer.id = crypto.randomUUID();

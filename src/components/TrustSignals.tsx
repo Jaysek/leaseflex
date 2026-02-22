@@ -29,9 +29,11 @@ export default function TrustSignals() {
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider text-center">
               Traditional
             </p>
-            <p className="text-xs font-medium text-neutral-900 uppercase tracking-wider text-center">
-              LeaseFlex
-            </p>
+            <div className="flex justify-center">
+              <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full">
+                LeaseFlex
+              </span>
+            </div>
           </div>
 
           {/* Rows */}
@@ -44,7 +46,7 @@ export default function TrustSignals() {
             >
               <p className="text-sm font-medium text-neutral-900">{row.label}</p>
               <div className="flex items-center justify-center gap-2">
-                <X className="w-3.5 h-3.5 text-neutral-300 shrink-0" />
+                <X className="w-3.5 h-3.5 text-red-300 shrink-0" />
                 <span className="text-sm text-neutral-400">{row.old}</span>
               </div>
               <div className="flex items-center justify-center gap-2">

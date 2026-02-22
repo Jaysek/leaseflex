@@ -82,12 +82,8 @@ export default function QuotePage() {
             You&apos;re approved
           </p>
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 leading-tight">
-            Your liability if you leave early is upwards of ${offer.coverage_cap.toLocaleString()}.
+            {offer.full_name ? `${offer.full_name.split(' ')[0]}, your` : 'Your'} liability if you leave early is up to ${(offer.months_remaining * offer.monthly_rent).toLocaleString()}.
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-neutral-500">
-            Protect your mobility for{' '}
-            <span className="font-semibold text-neutral-900">${offer.monthly_price}/mo</span>.
-          </p>
           {offer.address && (
             <p className="mt-3 text-sm text-neutral-400">
               {offer.address}, {offer.city}, {offer.state}
