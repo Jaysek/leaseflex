@@ -3,7 +3,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const { name, email, phone, offer_id, monthly_price, flex_score, coverage_cap, city, state } = await request.json();
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json(
@@ -12,15 +12,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let position = Math.floor(Math.random() * 200) + 247;
+
     if (isSupabaseConfigured() && supabase) {
       await supabase
         .from('waitlist')
-        .upsert({ email: email.toLowerCase().trim() }, { onConflict: 'email' });
+        .upsert({
+          email: email.toLowerCase().trim(),
+          name: name?.trim() || null,
+          phone: phone?.trim() || null,
+          offer_id,
+          monthly_price,
+          flex_score,
+          coverage_cap,
+          city,
+          state,
+        }, { onConflict: 'email' });
+
+      // Get approximate position
+      const { count } = await supabase
+        .from('waitlist')
+        .select('*', { count: 'exact', head: true });
+      if (count) position = count;
     }
 
-    console.log(`[WAITLIST] ${email}`);
+    console.log(`[WAITLIST] ${name} (${email}) ${phone || ''} — ${city}, ${state} — Flex Score: ${flex_score} — $${monthly_price}/mo`);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, position });
   } catch (err) {
     console.error('Waitlist error:', err);
     return NextResponse.json(

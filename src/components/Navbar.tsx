@@ -31,6 +31,12 @@ export default function Navbar() {
           >
             Coverage
           </Link>
+          <Link
+            href="/landlords"
+            className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+          >
+            For Landlords
+          </Link>
         </div>
 
         <Link

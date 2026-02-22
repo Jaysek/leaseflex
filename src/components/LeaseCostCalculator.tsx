@@ -1,0 +1,154 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight, X } from 'lucide-react';
+
+function getLeaseFlexPrice(rent: number): number {
+  if (rent < 3000) return 12;
+  if (rent < 6000) return 20;
+  if (rent < 10000) return 35;
+  return 50;
+}
+
+function formatMoney(n: number): string {
+  return n.toLocaleString('en-US');
+}
+
+export default function LeaseCostCalculator() {
+  const [rent, setRent] = useState(3000);
+
+  const terminationFee = rent * 2;
+  const remainingRent = rent * 3;
+  const totalPenalty = terminationFee + remainingRent;
+  const monthlyPrice = getLeaseFlexPrice(rent);
+  const savings = totalPenalty - monthlyPrice;
+
+  return (
+    <section className="py-24 bg-white">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
+            What breaking your lease actually costs
+          </h2>
+          <p className="mt-4 text-neutral-500 max-w-xl mx-auto">
+            Most leases include penalties that can total $5,000&ndash;$15,000 if you need to move early.
+          </p>
+        </div>
+
+        <div className="bg-neutral-50 rounded-2xl border border-neutral-100 p-8 md:p-10">
+          {/* Rent slider */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-base font-semibold text-neutral-900">Your monthly rent</span>
+              <span className="text-2xl font-semibold text-neutral-900 tabular-nums">${formatMoney(rent)}<span className="text-sm font-normal text-neutral-400">/mo</span></span>
+            </div>
+            <input
+              type="range"
+              min={1500}
+              max={7000}
+              step={100}
+              value={rent}
+              onChange={(e) => setRent(Number(e.target.value))}
+              className="w-full h-2 bg-neutral-200 rounded-full appearance-none cursor-pointer accent-neutral-900 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-neutral-900 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer"
+            />
+            <div className="flex justify-between mt-1.5">
+              <span className="text-[10px] text-neutral-400">$1,500</span>
+              <span className="text-[10px] text-neutral-400">$7,000</span>
+            </div>
+          </div>
+
+          <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-6">
+            Typical ${formatMoney(rent)}/mo apartment lease
+          </p>
+
+          {/* Risk vs Protection comparison */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* Without protection */}
+            <div className="bg-white rounded-xl border border-neutral-200 p-6">
+              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-5">
+                Without LeaseFlex
+              </p>
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-neutral-500">Early termination</span>
+                  <span className="font-medium text-neutral-900 tabular-nums">${formatMoney(terminationFee)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-neutral-500">Remaining rent</span>
+                  <span className="font-medium text-neutral-900 tabular-nums">${formatMoney(remainingRent)}</span>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-neutral-100">
+                <p className="text-xs text-neutral-400 uppercase tracking-wider mb-1">What you&apos;d owe</p>
+                <p className="text-3xl font-semibold text-neutral-900 tabular-nums">${formatMoney(totalPenalty)}</p>
+                <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-neutral-400">
+                  <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  <span>Paid by you</span>
+                </div>
+              </div>
+            </div>
+
+            {/* With LeaseFlex */}
+            <div className="bg-white rounded-xl border-2 border-neutral-900 p-6 relative">
+              <div className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-neutral-900 text-white text-[10px] font-semibold uppercase tracking-wider rounded">
+                With LeaseFlex
+              </div>
+              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-5">
+                Your monthly cost
+              </p>
+              <p className="text-4xl font-semibold text-neutral-900 mb-6 tabular-nums">
+                ${monthlyPrice}<span className="text-lg text-neutral-400"> /month</span>
+              </p>
+              <div className="pt-4 border-t border-neutral-100">
+                <p className="text-xs text-neutral-400 uppercase tracking-wider mb-1">What you&apos;d owe</p>
+                <p className="text-3xl font-semibold text-neutral-900">$0</p>
+                <p className="mt-2 text-xs italic text-neutral-400">
+                  Covered by LeaseFlex
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Savings moment */}
+          <div className="bg-white rounded-xl border border-neutral-100 p-6 text-center mb-8">
+            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">Potential savings</p>
+            <p className="text-2xl md:text-3xl font-semibold text-neutral-900 tabular-nums mb-1">
+              ${formatMoney(savings)} protected
+            </p>
+            <p className="text-sm text-neutral-500">
+              for ${monthlyPrice}/month
+            </p>
+          </div>
+
+          {/* Commitment anchors */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+            {[
+              { emoji: '\u2615', label: 'one coffee per week' },
+              { emoji: '\u{1F355}', label: 'one pizza per month' },
+              { emoji: '\u{1F695}', label: 'one Uber ride' },
+            ].map((item) => (
+              <span
+                key={item.label}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-neutral-100 text-xs text-neutral-600"
+              >
+                <span>{item.emoji}</span>
+                Less than {item.label}
+              </span>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/offer"
+              className="group inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors"
+            >
+              See if my lease qualifies
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

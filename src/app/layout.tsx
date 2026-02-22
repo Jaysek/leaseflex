@@ -10,22 +10,33 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "LeaseFlex — Mobility Protection for Renters",
+  title: "LeaseFlex — Break your lease without the penalty.",
   description:
-    "Life changes. Your lease shouldn't trap you. Get flexibility for a small monthly fee.",
+    "LeaseFlex covers early termination fees so you can move when life changes. Starting at $12/month.",
+  metadataBase: new URL("https://leaseflex.io"),
   openGraph: {
-    title: "LeaseFlex — Your Lease Shouldn't Trap You",
+    title: "Break your lease without the penalty.",
     description:
-      "Break your lease without the financial hit. AI-powered protection starting at $12/mo.",
+      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $12/month.",
+    url: "https://leaseflex.io",
     siteName: "LeaseFlex",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "LeaseFlex — Break your lease without the penalty",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LeaseFlex — Your Lease Shouldn't Trap You",
+    title: "Break your lease without the penalty.",
     description:
-      "Break your lease without the financial hit. AI-powered protection starting at $12/mo.",
+      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $12/month.",
+    images: ["/og.png"],
   },
   icons: {
     icon: "/favicon.svg",

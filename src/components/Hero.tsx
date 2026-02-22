@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Upload, Loader2, Star } from 'lucide-react';
+import { ArrowRight, Upload, Loader2, Shield } from 'lucide-react';
 
 export default function Hero() {
   const router = useRouter();
@@ -43,37 +43,31 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
 
       <div className="relative max-w-3xl mx-auto px-6 text-center">
-        {/* Social proof chip */}
-        <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm">
-          <div className="flex -space-x-1">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Star key={i} className="w-3 h-3 text-amber-400 fill-amber-400" />
-            ))}
-          </div>
+        <div className="inline-flex items-center gap-2 mt-8 mb-14 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm">
+          <Shield className="w-3.5 h-3.5 text-neutral-500" />
           <span className="text-xs font-medium text-neutral-600">
-            Trusted by 2,400+ renters
+            Going live Spring &apos;26
           </span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight text-neutral-900 leading-[1.08]">
-          Your lease shouldn&apos;t
+          Break your lease
           <br />
           <span className="bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 bg-clip-text text-transparent">
-            trap you.
+            without the penalty.
           </span>
         </h1>
 
-        <p className="mt-6 text-lg md:text-xl text-neutral-500 max-w-xl mx-auto leading-relaxed">
-          Break your lease without the financial hit. AI-powered
-          protection starting at $12/mo.
+        <p className="mt-6 text-lg md:text-xl text-neutral-700 max-w-xl mx-auto leading-relaxed">
+          Starting at <span className="font-semibold text-neutral-900">$12/month</span>. LeaseFlex covers the cost of leaving your lease early.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/offer"
+            href="/#how-it-works"
             className="group inline-flex items-center gap-2 px-8 py-4 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 shadow-lg shadow-neutral-900/20 hover:shadow-xl hover:shadow-neutral-900/25 transition-all"
           >
-            Get my offer — free
+            Learn how it works
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
 
@@ -107,23 +101,13 @@ export default function Hero() {
           />
         </div>
 
-        <p className="mt-6 text-xs text-neutral-400">
-          No credit check &middot; Cancel anytime &middot; 2-minute setup
+        <p className="mt-5 text-sm text-neutral-600">
+          Upload your lease in seconds and see if you qualify.
         </p>
 
-        {/* Press / Backed by bar */}
-        <div className="mt-16 pt-10 border-t border-neutral-200/50">
-          <p className="text-[10px] font-medium text-neutral-400 uppercase tracking-[0.2em] mb-5">
-            Built for renters in
-          </p>
-          <div className="flex items-center justify-center gap-8 sm:gap-12 text-neutral-300 text-sm font-semibold tracking-wide">
-            <span>New York</span>
-            <span className="hidden sm:inline">San Francisco</span>
-            <span>Austin</span>
-            <span>Chicago</span>
-            <span className="hidden sm:inline">Miami</span>
-          </div>
-        </div>
+        <p className="mt-3 text-sm text-neutral-500">
+          No credit check &middot; Cancel anytime &middot; Not all leases qualify
+        </p>
       </div>
     </section>
   );

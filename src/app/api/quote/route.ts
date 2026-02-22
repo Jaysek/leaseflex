@@ -15,6 +15,9 @@ export async function POST(request: NextRequest) {
 
     const offer = generateOffer(body);
 
+    // Always generate a fallback ID
+    offer.id = crypto.randomUUID();
+    offer.created_at = new Date().toISOString();
     // Save to Supabase if configured
     if (isSupabaseConfigured() && supabase) {
       const { data, error } = await supabase
@@ -42,15 +45,11 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (error) {
-        console.error('Supabase insert error:', error);
+        console.error('Supabase insert error:', error.message, error.details, error.hint, error.code);
       } else if (data) {
         offer.id = data.id;
         offer.created_at = data.created_at;
       }
-    } else {
-      // Generate a local ID for dev without Supabase
-      offer.id = crypto.randomUUID();
-      offer.created_at = new Date().toISOString();
     }
 
     return NextResponse.json(offer);

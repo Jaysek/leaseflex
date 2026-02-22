@@ -6,7 +6,10 @@ type EventName =
   | 'checkout_started'
   | 'checkout_completed'
   | 'email_offer_sent'
-  | 'waitlist_joined';
+  | 'waitlist_joined'
+  | 'start_protection_clicked'
+  | 'protection_submitted'
+  | 'email_quote_clicked';
 
 type EventProperties = Record<string, string | number | boolean | null | undefined>;
 

@@ -98,7 +98,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-neutral-900 mb-3">10. Contact</h2>
             <p>
               Questions about these terms? Email us at{' '}
-              <span className="text-neutral-900 font-medium">support@leaseflex.com</span>.
+              <span className="text-neutral-900 font-medium">justin@leaseflex.io</span>.
             </p>
           </section>
         </div>

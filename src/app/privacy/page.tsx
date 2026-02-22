@@ -101,7 +101,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-neutral-900 mb-3">9. Contact</h2>
             <p>
               Privacy questions or data requests? Email us at{' '}
-              <span className="text-neutral-900 font-medium">privacy@leaseflex.com</span>.
+              <span className="text-neutral-900 font-medium">justin@leaseflex.io</span>.
             </p>
           </section>
         </div>

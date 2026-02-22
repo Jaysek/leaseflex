@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       const location = [address, city, state].filter(Boolean).join(', ');
 
       await resend.emails.send({
-        from: 'LeaseFlex <noreply@leaseflex.com>',
+        from: 'LeaseFlex <justin@leaseflex.io>',
         to: email,
         subject: `Your LeaseFlex offer — $${monthly_price}/mo`,
         html: `

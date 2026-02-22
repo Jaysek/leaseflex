@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PDFParse } from 'pdf-parse';
+import Anthropic from '@anthropic-ai/sdk';
 
 interface ParsedLease {
   monthly_rent?: number;
@@ -12,123 +12,22 @@ interface ParsedLease {
   sublet_allowed?: 'yes' | 'no' | 'unknown';
 }
 
-function extractRent(text: string): number | undefined {
-  // Match patterns like "$3,000/month", "$3000 per month", "monthly rent: $3,000", "rent of $3,000"
-  const patterns = [
-    /(?:monthly\s*rent|rent\s*(?:is|of|:))\s*\$?([\d,]+(?:\.\d{2})?)/i,
-    /\$\s*([\d,]+(?:\.\d{2})?)\s*(?:\/\s*month|per\s*month|monthly|\/\s*mo)/i,
-    /(?:rent|payment)\s*(?:of|:)\s*\$?([\d,]+(?:\.\d{2})?)/i,
-  ];
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (match) {
-      const val = parseFloat(match[1].replace(/,/g, ''));
-      if (val >= 500 && val <= 50000) return val;
-    }
-  }
-  return undefined;
-}
+const EXTRACTION_PROMPT = `You are extracting key lease terms from a lease agreement document. Analyze the document and return a JSON object with these fields:
 
-function extractDates(text: string): { start?: string; end?: string } {
-  // Match patterns like "01/01/2025", "January 1, 2025", "2025-01-01"
-  const datePatterns = [
-    /(\d{1,2}\/\d{1,2}\/\d{4})/g,
-    /(\d{4}-\d{2}-\d{2})/g,
-    /((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4})/gi,
-  ];
+- monthly_rent: number (the monthly rent amount, e.g. 2300)
+- address: string (the rental property street address, e.g. "339 East 9th Street, Apt. 4B")
+- city: string (the city, e.g. "New York")
+- state: string (two-letter state abbreviation, e.g. "NY")
+- lease_start_date: string (ISO format YYYY-MM-DD, e.g. "2025-12-01")
+- lease_end_date: string (ISO format YYYY-MM-DD, e.g. "2026-11-30")
+- early_termination_fee_amount: number or null (the early termination fee if mentioned)
+- sublet_allowed: "yes", "no", or "unknown" (whether subletting is permitted)
 
-  const dates: Date[] = [];
-  for (const pattern of datePatterns) {
-    let match;
-    while ((match = pattern.exec(text)) !== null) {
-      const d = new Date(match[1]);
-      if (!isNaN(d.getTime()) && d.getFullYear() >= 2020 && d.getFullYear() <= 2035) {
-        dates.push(d);
-      }
-    }
-  }
-
-  // Also check for "commencing" / "beginning" / "start" and "ending" / "expiring" / "terminating" context
-  const startContext = /(?:commenc|begin|start|effective)\w*\s*(?:on|date|:)?\s*/i;
-  const endContext = /(?:end|expir|terminat|conclud)\w*\s*(?:on|date|:)?\s*/i;
-
-  let start: string | undefined;
-  let end: string | undefined;
-
-  // Try context-aware extraction
-  for (const pattern of datePatterns) {
-    const startMatch = new RegExp(startContext.source + pattern.source.replace(/^\/|\/\w*$/g, ''), 'i').exec(text);
-    if (startMatch) {
-      const d = new Date(startMatch[1]);
-      if (!isNaN(d.getTime())) start = d.toISOString().split('T')[0];
-    }
-    const endMatch = new RegExp(endContext.source + pattern.source.replace(/^\/|\/\w*$/g, ''), 'i').exec(text);
-    if (endMatch) {
-      const d = new Date(endMatch[1]);
-      if (!isNaN(d.getTime())) end = d.toISOString().split('T')[0];
-    }
-  }
-
-  // Fallback: if we found at least 2 dates, assume earliest is start, latest is end
-  if (!start && !end && dates.length >= 2) {
-    dates.sort((a, b) => a.getTime() - b.getTime());
-    start = dates[0].toISOString().split('T')[0];
-    end = dates[dates.length - 1].toISOString().split('T')[0];
-  }
-
-  return { start, end };
-}
-
-function extractTerminationFee(text: string): number | undefined {
-  const patterns = [
-    /(?:early\s*termination|break|cancellation)\s*(?:fee|penalty|charge)\s*(?:of|:|\s)\s*\$?([\d,]+)/i,
-    /\$\s*([\d,]+)\s*(?:early\s*termination|break|cancellation)\s*(?:fee|penalty)/i,
-  ];
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (match) {
-      const val = parseFloat(match[1].replace(/,/g, ''));
-      if (val > 0 && val < 100000) return val;
-    }
-  }
-  return undefined;
-}
-
-function extractSublet(text: string): 'yes' | 'no' | 'unknown' {
-  const noSublet = /(?:no|not|prohibit|forbid|shall not|may not)\s*(?:sublet|subleas|assign)/i;
-  const yesSublet = /(?:may|can|permit|allow|right to)\s*(?:sublet|subleas|assign)/i;
-  if (noSublet.test(text)) return 'no';
-  if (yesSublet.test(text)) return 'yes';
-  return 'unknown';
-}
-
-function extractAddress(text: string): string | undefined {
-  // Match street address patterns like "123 Main St", "456 Oak Avenue, Apt 2B"
-  const patterns = [
-    /(?:premises|property|located at|address[:\s]*)\s*(\d+[^,\n]{5,60})/i,
-    /(\d+\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Ct|Court|Pl|Place|Cir|Circle)\.?(?:\s*,?\s*(?:Apt|Suite|Unit|#)\s*\w+)?)/i,
-  ];
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (match) return match[1].trim();
-  }
-  return undefined;
-}
-
-function extractCityState(text: string): { city?: string; state?: string } {
-  const stateAbbrevs = [
-    'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD',
-    'MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC',
-    'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC',
-  ];
-  // Match "City, ST" or "City, State ZIP"
-  const pattern = new RegExp(`([A-Z][a-zA-Z\\s]+),\\s*(${stateAbbrevs.join('|')})\\b`, 'g');
-  const match = pattern.exec(text);
-  if (match) {
-    return { city: match[1].trim(), state: match[2] };
-  }
-  return {};
-}
+Rules:
+- For renewal leases, use the NEW renewal dates and rent amounts, not the expiring ones.
+- If a field is not found or unclear, omit it from the JSON.
+- For rent, use the final/new monthly rent amount (after any increases).
+- Return ONLY valid JSON, no markdown, no explanation.`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -147,25 +46,80 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
-    const text = result.text;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      console.error('ANTHROPIC_API_KEY not configured');
+      return NextResponse.json(
+        { error: 'Lease parsing service not configured. Please fill in the form manually.' },
+        { status: 500 }
+      );
+    }
 
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+    const client = new Anthropic({ apiKey });
+
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 1024,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'document',
+              source: {
+                type: 'base64',
+                media_type: 'application/pdf',
+                data: base64,
+              },
+            },
+            {
+              type: 'text',
+              text: EXTRACTION_PROMPT,
+            },
+          ],
+        },
+      ],
+    });
+
+    const textBlock = response.content.find((block) => block.type === 'text');
+    if (!textBlock || textBlock.type !== 'text') {
+      throw new Error('No text response from extraction model');
+    }
+
+    // Parse the JSON response, stripping any markdown fencing
+    const jsonStr = textBlock.text.replace(/```json\n?|\n?```/g, '').trim();
+    const extracted = JSON.parse(jsonStr) as Record<string, unknown>;
+
+    // Map and validate into ParsedLease
     const parsed: ParsedLease = {};
-    parsed.monthly_rent = extractRent(text);
-    parsed.address = extractAddress(text);
 
-    const dates = extractDates(text);
-    parsed.lease_start_date = dates.start;
-    parsed.lease_end_date = dates.end;
-
-    parsed.early_termination_fee_amount = extractTerminationFee(text);
-    parsed.sublet_allowed = extractSublet(text);
-
-    const location = extractCityState(text);
-    parsed.city = location.city;
-    parsed.state = location.state;
+    if (typeof extracted.monthly_rent === 'number' && extracted.monthly_rent >= 500 && extracted.monthly_rent <= 50000) {
+      parsed.monthly_rent = extracted.monthly_rent;
+    }
+    if (typeof extracted.address === 'string' && extracted.address.length > 0) {
+      parsed.address = extracted.address;
+    }
+    if (typeof extracted.city === 'string' && extracted.city.length > 0) {
+      parsed.city = extracted.city;
+    }
+    if (typeof extracted.state === 'string' && /^[A-Z]{2}$/.test(extracted.state)) {
+      parsed.state = extracted.state;
+    }
+    if (typeof extracted.lease_start_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(extracted.lease_start_date)) {
+      parsed.lease_start_date = extracted.lease_start_date;
+    }
+    if (typeof extracted.lease_end_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(extracted.lease_end_date)) {
+      parsed.lease_end_date = extracted.lease_end_date;
+    }
+    if (typeof extracted.early_termination_fee_amount === 'number' && extracted.early_termination_fee_amount > 0) {
+      parsed.early_termination_fee_amount = extracted.early_termination_fee_amount;
+    }
+    if (extracted.sublet_allowed === 'yes' || extracted.sublet_allowed === 'no') {
+      parsed.sublet_allowed = extracted.sublet_allowed;
+    }
 
     const fieldsFound = Object.values(parsed).filter((v) => v !== undefined).length;
 

@@ -1,36 +1,72 @@
-import { Check } from 'lucide-react';
+import Link from 'next/link';
+import { Check, ArrowRight } from 'lucide-react';
+
+const tiers = [
+  {
+    name: 'Starter',
+    price: '$12',
+    coverage: 'Up to $7,500',
+    description: 'Essential protection for lower-rent apartments.',
+    features: [
+      'Coverage up to $7,500',
+      '$500 deductible',
+      'Coverage starts after 60 days',
+      '1 covered claim per lease',
+    ],
+    popular: false,
+  },
+  {
+    name: 'Core',
+    price: '$20',
+    coverage: 'Up to $15,000',
+    description: 'Our most popular plan. Full coverage for most renters.',
+    features: [
+      'Coverage up to $15,000',
+      '$500 deductible',
+      'Coverage starts after 60 days',
+      '1 covered claim per lease',
+      'Faster payouts',
+    ],
+    popular: true,
+  },
+  {
+    name: 'Premium',
+    price: '$45',
+    coverage: 'Up to $30,000',
+    description: 'Maximum protection for high-rent leases.',
+    features: [
+      'Coverage up to $30,000',
+      '$500 deductible',
+      'Coverage starts after 60 days',
+      '1 covered claim per lease',
+      'Faster payouts',
+      'Concierge support',
+    ],
+    popular: false,
+  },
+];
 
 export default function PricingPreview() {
-  const tiers = [
-    { range: '$1,500 – $3,000', price: '$12', popular: false },
-    { range: '$3,000 – $6,000', price: '$20', popular: true },
-    { range: '$6,000 – $10,000', price: '$35', popular: false },
-    { range: '$10,000+', price: 'From $50', popular: false },
-  ];
-
   return (
     <section id="pricing" className="py-24 bg-white">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-            Pricing
-          </p>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
             Simple, transparent pricing
           </h2>
           <p className="mt-3 text-neutral-500">
-            One monthly fee. Based on your rent. That&apos;s it.
+            Choose the plan that matches your lease. No contracts. Cancel anytime.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-3 gap-6">
           {tiers.map((tier) => (
             <div
-              key={tier.range}
-              className={`relative group rounded-2xl p-6 text-center transition-all ${
+              key={tier.name}
+              className={`relative rounded-2xl p-8 flex flex-col ${
                 tier.popular
-                  ? 'tier-highlight text-white ring-1 ring-white/10 scale-[1.02] shadow-xl'
-                  : 'border border-neutral-100 bg-white hover:border-neutral-200 hover:shadow-sm'
+                  ? 'tier-highlight text-white ring-1 ring-white/10 shadow-xl scale-[1.02]'
+                  : 'border border-neutral-100 bg-white'
               }`}
             >
               {tier.popular && (
@@ -39,62 +75,62 @@ export default function PricingPreview() {
                 </div>
               )}
 
-              <p
-                className={`text-xs font-medium mb-3 uppercase tracking-wider ${
-                  tier.popular ? 'text-neutral-400' : 'text-neutral-400'
-                }`}
-              >
-                Monthly rent
+              <p className={`text-sm font-semibold mb-1 ${tier.popular ? 'text-white' : 'text-neutral-900'}`}>
+                {tier.name}
               </p>
-              <p
-                className={`text-sm font-medium mb-4 ${
-                  tier.popular ? 'text-white' : 'text-neutral-700'
-                }`}
-              >
-                {tier.range}
+              <p className={`text-xs mb-6 ${tier.popular ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                {tier.description}
               </p>
-              <div
-                className={`pt-4 border-t ${
-                  tier.popular ? 'border-white/10' : 'border-neutral-100'
-                }`}
-              >
-                <span
-                  className={`text-3xl font-semibold ${
-                    tier.popular ? 'text-white' : 'text-neutral-900'
-                  }`}
-                >
+
+              <div className="mb-6">
+                <span className={`text-4xl font-semibold ${tier.popular ? 'text-white' : 'text-neutral-900'}`}>
                   {tier.price}
                 </span>
-                <span
-                  className={`text-sm ${
-                    tier.popular ? 'text-neutral-400' : 'text-neutral-400'
-                  }`}
-                >
+                <span className={`text-sm ${tier.popular ? 'text-neutral-400' : 'text-neutral-400'}`}>
                   /mo
                 </span>
               </div>
 
-              {tier.popular && (
-                <div className="mt-4 flex flex-col gap-1.5">
-                  {['Coverage up to $15k', '$500 deductible', '60-day activation'].map(
-                    (item) => (
-                      <div
-                        key={item}
-                        className="flex items-center gap-1.5 text-xs text-neutral-300 justify-center"
-                      >
-                        <Check className="w-3 h-3 text-emerald-400" />
-                        {item}
-                      </div>
-                    )
-                  )}
+              <p className={`text-xs font-medium uppercase tracking-wider mb-4 ${tier.popular ? 'text-neutral-400' : 'text-neutral-400'}`}>
+                {tier.coverage} coverage
+              </p>
+
+              <div className={`pt-6 border-t flex-1 ${tier.popular ? 'border-white/10' : 'border-neutral-100'}`}>
+                <div className="space-y-3">
+                  {tier.features.map((feature) => (
+                    <div
+                      key={feature}
+                      className={`flex items-center gap-2 text-sm ${
+                        tier.popular ? 'text-neutral-300' : 'text-neutral-600'
+                      }`}
+                    >
+                      <Check className={`w-4 h-4 shrink-0 ${tier.popular ? 'text-emerald-400' : 'text-emerald-500'}`} />
+                      {feature}
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+
+              <Link
+                href="/offer"
+                className={`mt-8 group inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium rounded-full transition-all ${
+                  tier.popular
+                    ? 'bg-white text-neutral-900 hover:bg-neutral-100'
+                    : 'bg-neutral-900 text-white hover:bg-neutral-800'
+                }`}
+              >
+                Get started
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
           ))}
         </div>
 
-        <p className="text-center mt-8 text-xs text-neutral-400">
-          $500 deductible &middot; Coverage cap up to $30,000 &middot; Max $99/month
+        <p className="text-center mt-10 text-sm text-neutral-500">
+          Your plan is based on your monthly rent. All plans cover the same reasons for leaving.
+        </p>
+        <p className="text-center mt-2 text-[11px] text-neutral-400">
+          Covered reasons only &middot; Not all leases qualify &middot; See terms for details
         </p>
       </div>
     </section>
