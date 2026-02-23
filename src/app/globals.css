@@ -2,9 +2,6 @@
 
 @theme inline {
   --font-sans: var(--font-geist);
-  --color-cream: #FBF9F6;
-  --color-sand: #F5F1EB;
-  --color-sand-dark: #EDE8E0;
 }
 
 body {
@@ -55,16 +52,16 @@ input[type="number"] {
 
 /* Hero dot grid pattern */
 .hero-grid {
-  background-image: radial-gradient(circle, #d6d0c8 1px, transparent 1px);
+  background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 /* Gradient mesh for hero */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(180, 160, 130, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(160, 140, 110, 0.08), transparent),
-    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(140, 130, 100, 0.06), transparent);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 50%, rgba(59, 130, 246, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(16, 185, 129, 0.06), transparent);
 }
 
 /* Shimmer for featured pricing tier */

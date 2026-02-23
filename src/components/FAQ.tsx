@@ -34,7 +34,7 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section className="py-24 bg-sand">
+    <section className="py-24 bg-neutral-50">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -49,7 +49,7 @@ export default function FAQ() {
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-sand-dark overflow-hidden"
+              className="bg-white rounded-xl border border-neutral-100 overflow-hidden"
             >
               <button
                 onClick={() => setOpen(open === i ? null : i)}

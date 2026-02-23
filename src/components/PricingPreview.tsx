@@ -51,7 +51,7 @@ const examples = [
 
 export default function PricingPreview() {
   return (
-    <section id="pricing" className="py-24">
+    <section id="pricing" className="py-24 bg-white">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -71,7 +71,7 @@ export default function PricingPreview() {
                 className={`relative rounded-2xl p-8 flex flex-col ${
                   ex.popular
                     ? 'tier-highlight text-white ring-1 ring-white/10 shadow-xl scale-[1.02]'
-                    : 'border border-sand-dark bg-white'
+                    : 'border border-neutral-100 bg-white'
                 }`}
               >
                 {ex.popular && (

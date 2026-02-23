@@ -27,10 +27,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-sand-dark bg-sand">
+    <footer className="border-t border-neutral-100 bg-neutral-50">
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Waitlist CTA */}
-        <div className="mb-12 pb-10 border-b border-sand-dark">
+        <div className="mb-12 pb-10 border-b border-neutral-100">
           <div className="max-w-md">
             <h3 className="text-lg font-semibold text-neutral-900 mb-1">
               Join the waitlist
@@ -46,7 +46,7 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 min-w-0 px-4 py-3 bg-white border border-sand-dark rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
+                  className="flex-1 min-w-0 px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
                 />
                 <button
                   type="submit"
@@ -90,7 +90,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-10 pt-6 border-t border-sand-dark text-xs text-neutral-300">
+        <div className="mt-10 pt-6 border-t border-neutral-100 text-xs text-neutral-300">
           &copy; {new Date().getFullYear()} LeaseFlex. All rights reserved.
         </div>
       </div>

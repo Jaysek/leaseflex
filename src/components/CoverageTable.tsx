@@ -12,7 +12,7 @@ const items = [
 
 export default function CoverageTable() {
   return (
-    <section id="coverage" className="py-24 bg-sand">
+    <section id="coverage" className="py-24 bg-neutral-50">
       <div className="max-w-2xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -23,7 +23,7 @@ export default function CoverageTable() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-sand-dark overflow-hidden">
+        <div className="bg-white rounded-2xl border border-neutral-100 overflow-hidden">
           {items.map((row, i) => (
             <div
               key={row.item}

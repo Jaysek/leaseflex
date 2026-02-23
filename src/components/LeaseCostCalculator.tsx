@@ -23,7 +23,7 @@ export default function LeaseCostCalculator() {
   const monthlyPrice = getLeaseFlexPrice(rent);
 
   return (
-    <section className="py-24">
+    <section className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -34,7 +34,7 @@ export default function LeaseCostCalculator() {
           </p>
         </div>
 
-        <div className="bg-sand rounded-2xl border border-sand-dark p-8 md:p-10">
+        <div className="bg-neutral-50 rounded-2xl border border-neutral-100 p-8 md:p-10">
           {/* Rent slider */}
           <div className="mb-10">
             <div className="flex items-center justify-between mb-3">
@@ -48,7 +48,7 @@ export default function LeaseCostCalculator() {
               step={100}
               value={rent}
               onChange={(e) => setRent(Number(e.target.value))}
-              className="w-full h-2 bg-sand-dark rounded-full appearance-none cursor-pointer accent-neutral-900 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-neutral-900 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer"
+              className="w-full h-2 bg-neutral-200 rounded-full appearance-none cursor-pointer accent-neutral-900 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-neutral-900 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer"
             />
             <div className="flex justify-between mt-1.5">
               <span className="text-[10px] text-neutral-400">$1,500</span>
@@ -63,7 +63,7 @@ export default function LeaseCostCalculator() {
           {/* Side-by-side comparison */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Without LeaseFlex */}
-            <div className="bg-white rounded-xl border border-sand-dark p-6">
+            <div className="bg-white rounded-xl border border-neutral-200 p-6">
               <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-5">
                 Without LeaseFlex
               </p>
@@ -102,8 +102,11 @@ export default function LeaseCostCalculator() {
                 </div>
               </div>
               <div className="pt-4 border-t border-neutral-200">
-                <p className="text-[10px] text-neutral-900 uppercase tracking-wider font-medium mb-1">Your cost</p>
-                <p className="text-3xl font-bold text-neutral-900 tabular-nums">${monthlyPrice}<span className="text-lg font-normal text-neutral-400">/mo</span></p>
+                <p className="text-[10px] text-neutral-900 uppercase tracking-wider font-medium mb-1">Your liability</p>
+                <p className="text-3xl font-bold text-neutral-900 tabular-nums">$0</p>
+                <p className="mt-1.5 text-xs text-neutral-400">
+                  Covered for just ${monthlyPrice}/mo
+                </p>
               </div>
             </div>
           </div>
@@ -111,7 +114,7 @@ export default function LeaseCostCalculator() {
           {/* Savings callout */}
           <div className="flex items-center justify-center gap-2 py-4 mb-4">
             <p className="text-sm text-neutral-500">
-              Protect yourself from <span className="font-semibold text-neutral-900">${formatMoney(totalPenalty)}</span> in penalties for <span className="font-semibold text-neutral-900">${monthlyPrice}/mo</span>
+              You&apos;d save <span className="font-semibold text-neutral-900">${formatMoney(totalPenalty)}</span> for just ${monthlyPrice}/mo
             </p>
           </div>
 
@@ -124,7 +127,7 @@ export default function LeaseCostCalculator() {
             ].map((item) => (
               <span
                 key={item.label}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-sand-dark text-xs text-neutral-600"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-neutral-100 text-xs text-neutral-600"
               >
                 <span>{item.emoji}</span>
                 Less than {item.label}
