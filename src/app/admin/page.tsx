@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Shield, Loader2, Users, FileText, CreditCard, Mail } from 'lucide-react';
+import { Shield, Loader2, Users, FileText, CreditCard, Mail, Building2 } from 'lucide-react';
 
 interface Offer {
   id: string;
@@ -52,15 +52,26 @@ interface Claim {
   payout_amount: number | null;
 }
 
+interface PartnerInquiry {
+  id: string;
+  created_at: string;
+  name: string;
+  email: string;
+  company: string | null;
+  units: string | null;
+  message: string | null;
+}
+
 interface AdminData {
   offers: Offer[];
   waitlist: WaitlistEntry[];
   subscriptions: Subscription[];
   claims: Claim[];
-  counts: { offers: number; waitlist: number; subscriptions: number; claims: number };
+  partners: PartnerInquiry[];
+  counts: { offers: number; waitlist: number; subscriptions: number; claims: number; partners: number };
 }
 
-type Tab = 'overview' | 'offers' | 'waitlist' | 'subscriptions' | 'claims';
+type Tab = 'overview' | 'offers' | 'waitlist' | 'subscriptions' | 'claims' | 'partners';
 
 export default function AdminPage() {
   const [secret, setSecret] = useState('');
@@ -143,6 +154,7 @@ export default function AdminPage() {
     { key: 'waitlist', label: `Waitlist (${data.counts.waitlist})`, icon: Mail },
     { key: 'subscriptions', label: `Subs (${data.counts.subscriptions})`, icon: CreditCard },
     { key: 'claims', label: `Claims (${data.counts.claims})`, icon: Users },
+    { key: 'partners', label: `Partners (${data.counts.partners})`, icon: Building2 },
   ];
 
   function formatDate(d: string) {
@@ -312,6 +324,38 @@ export default function AdminPage() {
                       </td>
                       <td className="px-4 py-3 text-neutral-400 text-xs font-mono">{s.stripe_subscription_id || '—'}</td>
                       <td className="px-4 py-3 text-neutral-500 whitespace-nowrap">{s.current_period_end ? formatDate(s.current_period_end) : '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Partners */}
+        {tab === 'partners' && (
+          <div className="bg-white rounded-xl border border-neutral-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-neutral-100">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Date</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Name</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Email</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Company</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Units</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.partners.map((p) => (
+                    <tr key={p.id} className="border-b border-neutral-50 hover:bg-neutral-50 transition-colors">
+                      <td className="px-4 py-3 text-neutral-400 whitespace-nowrap">{formatDate(p.created_at)}</td>
+                      <td className="px-4 py-3 font-medium text-neutral-900">{p.name}</td>
+                      <td className="px-4 py-3 text-neutral-500">{p.email}</td>
+                      <td className="px-4 py-3 text-neutral-500">{p.company || '—'}</td>
+                      <td className="px-4 py-3 text-neutral-500">{p.units || '—'}</td>
+                      <td className="px-4 py-3 text-neutral-500 max-w-[250px] truncate">{p.message || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

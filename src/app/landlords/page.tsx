@@ -1,477 +1,395 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+'use client';
+
+import { useState } from 'react';
 import {
   ArrowRight,
+  Check,
   Building2,
   ShieldCheck,
-  Users,
+  DollarSign,
   Clock,
-  Globe,
-  CheckCircle2,
-  Laptop,
-  Briefcase,
-  Heart,
-  MapPin,
-  Rocket,
-  Tv,
-  Plane,
-  Car,
+  Users,
+  Zap,
 } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'For Property Owners — LeaseFlex',
-  description:
-    'Increase lease conversions with flexible leasing. LeaseFlex gives renters the confidence to sign — while protecting landlords from early termination risk.',
-};
+import { track } from '@/lib/analytics';
 
 export default function LandlordsPage() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    company: '',
+    units: '',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.email || !form.name) return;
+    setSubmitting(true);
+    track('partner_inquiry');
+
+    try {
+      await fetch('/api/partners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+    } catch {
+      // still show success
+    }
+
+    setSubmitting(false);
+    setSubmitted(true);
+  };
+
   return (
     <main className="pt-16">
       {/* Hero */}
-      <section className="py-24 md:py-32 bg-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-50 border border-neutral-100 mb-8">
+      <section className="relative py-24 md:py-32 bg-white overflow-hidden">
+        <div className="absolute inset-0 hero-gradient" />
+        <div className="absolute inset-0 hero-grid opacity-[0.2]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
+
+        <div className="relative max-w-4xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm mb-8">
             <Building2 className="w-3.5 h-3.5 text-neutral-500" />
-            <span className="text-xs font-medium text-neutral-500">For Property Owners</span>
+            <span className="text-xs font-medium text-neutral-600">For Property Owners &amp; Managers</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-neutral-900 leading-[1.08]">
-            Increase lease conversions
+            Fill vacancies faster.
             <br />
-            <span className="text-neutral-400">with flexible leasing</span>
+            <span className="bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 bg-clip-text text-transparent">
+              Keep tenants longer.
+            </span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-neutral-500 max-w-2xl mx-auto leading-relaxed">
-            LeaseFlex gives renters the confidence to sign long-term leases&mdash;while protecting landlords from early termination risk.
+            Offer LeaseFlex as a tenant amenity. Prospects sign faster when they know they can leave if life changes — and you stay financially protected.
           </p>
 
-          <p className="mt-4 text-base font-medium text-neutral-700">
-            When renters feel safe committing, properties lease faster.
-          </p>
-
-          <div className="mt-10">
-            <Link
-              href="#partner"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 shadow-lg shadow-neutral-900/20 transition-all"
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href="#partner-form"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 shadow-lg shadow-neutral-900/20 hover:shadow-xl hover:shadow-neutral-900/25 transition-all"
             >
-              Partner with LeaseFlex
+              Become a partner
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* The Core Problem */}
-      <section className="py-24 bg-neutral-50">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="max-w-3xl">
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-              The core problem
-            </p>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-6">
-              Renters hesitate before signing long leases
-            </h2>
-            <p className="text-lg text-neutral-500 leading-relaxed mb-10">
-              Modern renters live in a world where everything is flexible.
-            </p>
+            </a>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center gap-2 px-6 py-4 bg-white/80 backdrop-blur-sm text-neutral-700 text-sm font-medium rounded-full border border-neutral-200 hover:border-neutral-300 hover:bg-white transition-all"
+            >
+              See how it works
+            </a>
           </div>
 
-          {/* Flexibility comparison */}
-          <div className="grid sm:grid-cols-3 gap-4 mb-12">
-            {[
-              { icon: Tv, label: 'Streaming', detail: 'Cancel anytime' },
-              { icon: Plane, label: 'Travel', detail: 'Flexible bookings' },
-              { icon: Car, label: 'Transportation', detail: 'Subscriptions' },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-4 px-5 py-4 bg-white rounded-xl border border-neutral-100"
-              >
-                <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-5 h-5 text-neutral-500" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-neutral-700 block">{item.label}</span>
-                  <span className="text-xs text-neutral-400">{item.detail}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-neutral-600 leading-relaxed mb-8 max-w-3xl">
-            But housing still requires rigid commitments. Because life changes, renters hesitate before signing leases. They worry about:
+          <p className="mt-5 text-sm text-neutral-400">
+            Free for property owners &middot; No integration required &middot; Live in under a week
           </p>
+        </div>
+      </section>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-10">
-            {[
-              { icon: Briefcase, label: 'Job relocation' },
-              { icon: Rocket, label: 'Career changes' },
-              { icon: Heart, label: 'Relationship changes' },
-              { icon: Building2, label: 'Buying a home' },
-              { icon: MapPin, label: 'Moving cities' },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-neutral-100"
-              >
-                <item.icon className="w-4 h-4 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
-                <span className="text-sm text-neutral-600">{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-white rounded-2xl border border-neutral-100 p-8 max-w-3xl">
-            <p className="text-neutral-700 font-medium">
-              This hesitation slows leasing velocity and increases vacancy risk.
-            </p>
+      {/* Stats */}
+      <section className="py-16 bg-neutral-900">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">24%</p>
+              <p className="text-sm text-neutral-400 mt-2">of renters break their lease early</p>
+            </div>
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">$4,200</p>
+              <p className="text-sm text-neutral-400 mt-2">average cost of a lease break</p>
+            </div>
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-white tracking-tight">47 days</p>
+              <p className="text-sm text-neutral-400 mt-2">average vacancy between tenants</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* The Core Insight */}
+      {/* The Problem */}
       <section className="py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-                The core insight
-              </p>
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-6">
-                Flexibility increases lease conversion
-              </h2>
-              <p className="text-neutral-500 leading-relaxed mb-4">
-                When renters feel trapped, they delay signing.
-              </p>
-              <p className="text-neutral-500 leading-relaxed mb-6">
-                When renters feel protected, they commit.
-              </p>
-              <p className="text-neutral-700 font-medium leading-relaxed">
-                LeaseFlex removes the fear of being locked into a lease.
-              </p>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
+              Rigid leases cost you money
+            </h2>
+            <p className="mt-3 text-neutral-500 max-w-xl mx-auto">
+              When prospects worry about being locked in, they hesitate, negotiate shorter terms, or walk away entirely.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="rounded-2xl border border-neutral-200 p-8">
+              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-6">Without LeaseFlex</p>
+              <div className="space-y-4">
+                {[
+                  'Prospects hesitate to sign long-term leases',
+                  'Tenants ghost when life changes',
+                  'You chase termination fees through collections',
+                  'Units sit empty for weeks between tenants',
+                ].map((text) => (
+                  <div key={text} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                    </div>
+                    <span className="text-sm text-neutral-600">{text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <p className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-4">
-                Properties that offer flexible leasing:
-              </p>
-              <div className="space-y-3">
+            <div className="rounded-2xl border-2 border-neutral-900 p-8 relative">
+              <div className="absolute -top-2.5 left-6 px-2.5 py-0.5 bg-neutral-900 text-white text-[10px] font-semibold uppercase tracking-wider rounded">
+                With LeaseFlex
+              </div>
+              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-6">&nbsp;</p>
+              <div className="space-y-4">
                 {[
-                  'Convert prospects faster',
-                  'Attract higher-quality renters',
-                  'Reduce vacancy risk',
+                  'Prospects sign faster with exit protection',
+                  'LeaseFlex handles early terminations',
+                  'You receive guaranteed payouts — no collections',
+                  'Units re-list immediately with no gap',
                 ].map((text) => (
-                  <div
-                    key={text}
-                    className="flex items-center gap-4 px-5 py-4 bg-neutral-50 rounded-xl border border-neutral-100"
-                  >
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                  <div key={text} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-emerald-600" />
+                    </div>
                     <span className="text-sm font-medium text-neutral-700">{text}</span>
                   </div>
                 ))}
               </div>
-              <p className="mt-6 text-sm font-medium text-neutral-900">
-                Flexibility turns interest into signed leases.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Example Scenario */}
-      <section className="py-24 bg-neutral-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-              Example scenario
-            </p>
-            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-neutral-900">
-              A renter is choosing between two identical apartments.
-            </h2>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-neutral-100 p-8">
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              <div className="rounded-xl border border-neutral-200 p-6">
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">
-                  Apartment A
-                </p>
-                <p className="text-lg font-semibold text-neutral-900 mb-1">Standard lease</p>
-                <p className="text-sm text-neutral-400">No flexibility</p>
-              </div>
-              <div className="rounded-xl border-2 border-neutral-900 p-6 relative">
-                <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-neutral-900 text-white text-[10px] font-semibold uppercase tracking-wider rounded">
-                  Most chosen
-                </div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">
-                  Apartment B
-                </p>
-                <p className="text-lg font-semibold text-neutral-900 mb-1">Standard lease + LeaseFlex</p>
-                <p className="text-sm text-neutral-500">Exit protection included</p>
-              </div>
-            </div>
-
-            <p className="text-neutral-700 font-medium">
-              Most renters choose the apartment that offers flexibility. LeaseFlex helps properties convert interest into signed leases.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How LeaseFlex Works */}
-      <section id="how-it-works" className="py-24 bg-white">
+      {/* How it works */}
+      <section id="how-it-works" className="py-24 bg-neutral-50">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-              How it works
-            </p>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
-              How LeaseFlex works
+              How it works for you
             </h2>
-            <p className="mt-3 text-neutral-500 max-w-lg mx-auto">
-              LeaseFlex sits between the renter and the lease obligation.
+            <p className="mt-3 text-neutral-500">
+              Zero cost. Zero integration. Zero risk.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 step: '01',
-                title: 'Tenant signs their lease',
-                description: 'Your leasing process remains exactly the same.',
+                icon: Users,
+                title: 'Offer at lease signing',
+                description: 'Mention LeaseFlex as an available amenity. We provide materials — you just share the link.',
               },
               {
                 step: '02',
-                title: 'Tenant adds LeaseFlex',
-                description: 'Offered as an optional protection add-on.',
+                icon: DollarSign,
+                title: 'Tenant signs up directly',
+                description: 'The tenant subscribes on their own. You are not involved in billing, claims, or any administration.',
               },
               {
                 step: '03',
-                title: 'Tenant pays a small monthly fee',
-                description: 'Typically $15–$30 per month. Rent collection continues normally.',
+                icon: ShieldCheck,
+                title: 'If they need to leave early',
+                description: 'LeaseFlex pays the termination cost directly. You receive the payout, re-list the unit, done.',
               },
             ].map((item) => (
-              <div
-                key={item.step}
-                className="bg-neutral-50 rounded-2xl border border-neutral-100 p-6"
-              >
-                <div className="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center mb-4">
-                  <span className="text-xs font-bold text-white">{item.step}</span>
+              <div key={item.step} className="bg-white rounded-2xl border border-neutral-100 p-8">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-9 h-9 rounded-xl bg-neutral-900 flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">{item.step}</span>
+                  </div>
+                  <item.icon className="w-5 h-5 text-neutral-400" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-base font-semibold text-neutral-900 mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* If tenant needs to exit early */}
-          <div className="bg-neutral-50 rounded-2xl border border-neutral-100 p-8">
-            <h3 className="text-lg font-semibold text-neutral-900 mb-6">
-              If a tenant needs to exit early
-            </h3>
-            <p className="text-neutral-500 mb-6">LeaseFlex handles the financial obligation.</p>
-            <div className="grid sm:grid-cols-3 gap-4 mb-6">
-              {[
-                'Lease break penalties covered',
-                'Early termination fees paid',
-                'Remaining rent obligations capped',
-              ].map((text) => (
-                <div key={text} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-neutral-600">{text}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm font-medium text-neutral-900">
-              The landlord receives the agreed termination payment. The unit can immediately be re-listed.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Landlords Take No Financial Risk */}
-      <section className="py-24 bg-neutral-50">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white border border-neutral-100 mb-6">
-            <ShieldCheck className="w-8 h-8 text-neutral-900" strokeWidth={1.5} />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-4">
-            Landlords take no financial risk
-          </h2>
-          <p className="text-lg text-neutral-500 max-w-2xl mx-auto mb-12">
-            LeaseFlex protects property revenue. If a tenant activates coverage:
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-6 text-left">
-            {[
-              {
-                title: 'Termination cost covered',
-                description: 'LeaseFlex pays the termination cost.',
-              },
-              {
-                title: 'Agreed payout received',
-                description: 'The landlord receives the agreed payout.',
-              },
-              {
-                title: 'Unit re-listed immediately',
-                description: 'The unit is re-listed immediately to minimize downtime.',
-              },
-            ].map((item) => (
-              <div key={item.title} className="bg-white rounded-2xl border border-neutral-100 p-6">
-                <h3 className="text-sm font-semibold text-neutral-900 mb-2">{item.title}</h3>
+                <h3 className="text-base font-semibold text-neutral-900 mb-2">{item.title}</h3>
                 <p className="text-sm text-neutral-500 leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
-
-          <p className="mt-8 text-sm font-medium text-neutral-700">
-            Your property remains financially protected.
-          </p>
         </div>
       </section>
 
-      {/* Why Modern Properties Offer LeaseFlex */}
+      {/* What you get */}
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-3">
-                Attract premium tenants
-              </p>
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-6">
-                Why modern properties offer LeaseFlex
-              </h2>
-              <p className="text-neutral-500 leading-relaxed mb-4">
-                Flexible leasing is becoming a competitive advantage. Properties offering flexibility attract renters who value mobility.
-              </p>
-              <p className="text-neutral-500 leading-relaxed">
-                These renters are highly mobile&mdash;and highly valuable tenants.
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-4">
-                Typical LeaseFlex renters include:
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  'Tech workers',
-                  'Consultants',
-                  'Entrepreneurs',
-                  'Remote professionals',
-                  'High-income renters',
-                  'Young professionals',
-                ].map((label) => (
-                  <div
-                    key={label}
-                    className="px-4 py-3 bg-neutral-50 rounded-xl border border-neutral-100 text-sm font-medium text-neutral-700 text-center"
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Seamless Property Integration */}
-      <section className="py-24 bg-neutral-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white border border-neutral-100 mb-4">
-              <Laptop className="w-6 h-6 text-neutral-900" strokeWidth={1.5} />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-3">
-              Seamless property integration
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
+              What property owners get
             </h2>
-            <p className="text-neutral-500 max-w-lg mx-auto">
-              LeaseFlex integrates easily into your leasing process.
-            </p>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { icon: Clock, title: 'Offer during lease signing', description: 'Optional tenant add-on at signing.' },
-              { icon: Users, title: 'Optional tenant add-on', description: 'Let tenants choose to add protection.' },
-              { icon: Globe, title: 'Integrate through leasing platforms', description: 'Works with existing property management tools.' },
+              { icon: DollarSign, title: 'Completely free', desc: 'No cost to you, ever. The tenant pays the subscription.' },
+              { icon: Zap, title: 'No integration', desc: 'No software to install. No workflow changes. Just share a link.' },
+              { icon: ShieldCheck, title: 'Guaranteed payouts', desc: 'If a tenant activates coverage, you receive the agreed termination payment.' },
+              { icon: Clock, title: 'Faster lease-ups', desc: 'Flexibility removes hesitation. Prospects who feel safe commit faster.' },
+              { icon: Users, title: 'Better tenants', desc: 'LeaseFlex attracts high-income, mobile professionals who plan ahead.' },
+              { icon: Building2, title: 'Competitive edge', desc: 'Stand out in listings. "Flexible leasing available" is a real differentiator.' },
             ].map((item) => (
-              <div key={item.title} className="bg-white rounded-2xl border border-neutral-100 p-6 text-center">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-neutral-50 border border-neutral-100 mb-3">
+              <div key={item.title} className="flex gap-4 p-5 rounded-xl border border-neutral-100 hover:border-neutral-200 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-neutral-50 flex items-center justify-center flex-shrink-0">
                   <item.icon className="w-5 h-5 text-neutral-600" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-sm font-semibold text-neutral-900 mb-1">{item.title}</h3>
-                <p className="text-sm text-neutral-500">{item.description}</p>
+                <div>
+                  <h3 className="text-sm font-semibold text-neutral-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          <p className="text-center mt-6 text-sm text-neutral-400">
-            No operational changes required.
+      {/* Social proof quote */}
+      <section className="py-16 bg-neutral-50">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <p className="text-xl md:text-2xl font-medium text-neutral-700 leading-relaxed italic">
+            &ldquo;If I could tell every prospect &lsquo;you can leave if you need to,&rsquo; they&apos;d sign on the spot. That&apos;s what LeaseFlex does.&rdquo;
+          </p>
+          <p className="mt-6 text-sm text-neutral-400">
+            — Property manager, 200+ units, New York City
           </p>
         </div>
       </section>
 
-      {/* Metrics */}
-      <section className="py-20 bg-white border-t border-neutral-100">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-3 gap-8 text-center">
-            <div>
-              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">24%</p>
-              <p className="text-sm text-neutral-500 mt-2">of renters break their lease early</p>
-            </div>
-            <div>
-              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">$4,200</p>
-              <p className="text-sm text-neutral-500 mt-2">average cost of a lease break</p>
-            </div>
-            <div>
-              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">2.3x</p>
-              <p className="text-sm text-neutral-500 mt-2">faster lease conversion with flexibility</p>
-            </div>
+      {/* Partner Form */}
+      <section id="partner-form" className="py-24 bg-white">
+        <div className="max-w-xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
+              Become a partner
+            </h2>
+            <p className="mt-3 text-neutral-500">
+              Tell us about your portfolio. We&apos;ll set you up in under a week.
+            </p>
           </div>
+
+          {!submitted ? (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1.5">Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="Jane Smith"
+                    className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1.5">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    placeholder="jane@property.com"
+                    className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1.5">Company</label>
+                  <input
+                    type="text"
+                    value={form.company}
+                    onChange={(e) => setForm({ ...form, company: e.target.value })}
+                    placeholder="Acme Properties"
+                    className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1.5">Number of units</label>
+                  <select
+                    value={form.units}
+                    onChange={(e) => setForm({ ...form, units: e.target.value })}
+                    className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow"
+                  >
+                    <option value="">Select</option>
+                    <option value="1-10">1–10</option>
+                    <option value="11-50">11–50</option>
+                    <option value="51-200">51–200</option>
+                    <option value="201-1000">201–1,000</option>
+                    <option value="1000+">1,000+</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-neutral-500 mb-1.5">Anything else?</label>
+                <textarea
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  placeholder="Tell us about your properties, markets, or questions..."
+                  rows={3}
+                  className="w-full px-4 py-3 bg-white border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-shadow resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full group inline-flex items-center justify-center gap-2 px-8 py-4 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 shadow-lg shadow-neutral-900/20 transition-all disabled:opacity-50"
+              >
+                {submitting ? 'Submitting...' : 'Get started'}
+                {!submitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
+              </button>
+
+              <p className="text-center text-xs text-neutral-400">
+                We&apos;ll reach out within 24 hours.
+              </p>
+            </form>
+          ) : (
+            <div className="text-center py-12 bg-neutral-50 rounded-2xl border border-neutral-100">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <Check className="w-6 h-6 text-emerald-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-neutral-900 mb-2">We&apos;ll be in touch</h3>
+              <p className="text-sm text-neutral-500 max-w-sm mx-auto">
+                Thanks for your interest. We&apos;ll reach out within 24 hours to discuss how LeaseFlex can work for your properties.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Final CTA */}
-      <section id="partner" className="py-24 md:py-32 bg-neutral-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.15]" style={{
+      <section className="py-24 md:py-32 bg-neutral-900 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.08]" style={{
           backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)',
           backgroundSize: '24px 24px',
         }} />
 
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-white leading-tight mb-4">
-            Increase lease conversions with LeaseFlex
+            Your competitors will offer this.
+            <br />
+            <span className="text-neutral-500">Be first.</span>
           </h2>
-          <p className="text-lg text-neutral-400 max-w-xl mx-auto mb-2">
-            Give renters the confidence to commit.
-          </p>
           <p className="text-lg text-neutral-400 max-w-xl mx-auto mb-10">
-            While keeping your property financially protected.
+            Flexible leasing is becoming the standard. Early adopters win the best tenants.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="mailto:justin@leaseflex.io?subject=LeaseFlex%20Partnership%20Inquiry"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-neutral-900 text-sm font-medium rounded-full hover:bg-neutral-100 transition-colors"
-            >
-              Partner with LeaseFlex
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-            <a
-              href="mailto:justin@leaseflex.io?subject=Schedule%20a%20Call%20-%20LeaseFlex"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-transparent text-white text-sm font-medium rounded-full border border-neutral-700 hover:border-neutral-500 transition-colors"
-            >
-              Schedule a call
-            </a>
-          </div>
-
-          <p className="mt-8 text-sm text-neutral-500">
-            No integration required &middot; Free for property owners &middot; Launch in under a week
-          </p>
+          <a
+            href="#partner-form"
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-neutral-900 text-sm font-medium rounded-full hover:bg-neutral-100 transition-colors"
+          >
+            Partner with LeaseFlex
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </a>
         </div>
       </section>
     </main>
