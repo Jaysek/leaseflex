@@ -88,7 +88,7 @@ export default async function Image() {
             letterSpacing: '-0.01em',
           }}
         >
-          Starting at $19/mo · See if you qualify in 60 seconds
+          Starting at $9/mo · See if you qualify in 60 seconds
         </span>
 
         {/* Bottom bar */}

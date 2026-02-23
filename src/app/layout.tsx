@@ -13,12 +13,12 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: "LeaseFlex — Break your lease without the penalty.",
   description:
-    "LeaseFlex covers early termination fees so you can move when life changes. Starting at $19/month.",
+    "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
   metadataBase: new URL("https://leaseflex.io"),
   openGraph: {
     title: "Break your lease without the penalty.",
     description:
-      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $19/month.",
+      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
     url: "https://leaseflex.io",
     siteName: "LeaseFlex",
     type: "website",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Break your lease without the penalty.",
     description:
-      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $19/month.",
+      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
     images: ["/og.png"],
   },
   icons: {
@@ -62,10 +62,10 @@ export default function RootLayout({
     offers: {
       '@type': 'Offer',
       priceCurrency: 'USD',
-      price: '19',
+      price: '9',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
-        price: '19',
+        price: '9',
         priceCurrency: 'USD',
         billingDuration: 'P1M',
       },

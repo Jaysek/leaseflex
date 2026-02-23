@@ -59,7 +59,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-lg md:text-xl text-neutral-700 max-w-xl mx-auto leading-relaxed">
-          Starting at <span className="font-semibold text-neutral-900">$19/month</span>. LeaseFlex covers the cost of leaving your lease early.
+          Starting at <span className="font-semibold text-neutral-900">$9/month</span>. Price scales with your rent — get your exact quote in 60 seconds.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">

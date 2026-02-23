@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     q: 'How is pricing calculated?',
-    a: 'Your price is based on your monthly rent. The higher the rent, the more coverage you need, so the plan costs a bit more. Plans start at $19/month.',
+    a: 'Your price is calculated from your exact rent — it scales smoothly, no fixed tiers. The higher your rent, the more coverage you get, so the price rises with it. Plans start at $9/month.',
   },
 ];
 

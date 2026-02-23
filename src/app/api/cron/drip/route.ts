@@ -33,7 +33,7 @@ const DRIP_EMAILS = [
         <p style="font-size: 15px; color: #525252; line-height: 1.6; margin: 0 0 16px;">The average cost to break a lease in the U.S. is <strong style="color: #171717;">$4,200</strong>. That's 2&ndash;3 months of rent, plus termination fees, lost deposits, and legal costs.</p>
         <p style="font-size: 15px; color: #525252; line-height: 1.6; margin: 0 0 16px;">And it happens more often than you'd think. <strong style="color: #171717;">1 in 4 renters</strong> break their lease before it ends.</p>
         <div style="background: #fafafa; border-radius: 12px; padding: 20px; margin: 24px 0;">
-          <p style="font-size: 14px; color: #525252; margin: 0;">LeaseFlex covers these costs for as little as <strong style="color: #171717;">$19/month</strong> &mdash; for thousands in protection.</p>
+          <p style="font-size: 14px; color: #525252; margin: 0;">LeaseFlex covers these costs starting at <strong style="color: #171717;">$9/month</strong> &mdash; price scales with your rent.</p>
         </div>
         <p style="font-size: 15px; color: #525252; line-height: 1.6;">We'll let you know the moment coverage is available in your area.</p>
         <p style="font-size: 15px; color: #171717; font-weight: 600; margin-top: 24px;">— Team LeaseFlex</p>

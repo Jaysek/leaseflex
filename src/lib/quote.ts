@@ -1,13 +1,12 @@
 import {
   DEDUCTIBLE,
   WAITING_PERIOD_DEFAULT,
-  WAITING_PERIOD_MANUAL_REVIEW,
-  MONTHS_REMAINING_MANUAL_REVIEW_THRESHOLD,
   RENT_CONCIERGE_THRESHOLD,
+  PRICE_FLOOR,
   PRICE_CEILING,
   COVERAGE_CAP_MAX,
   COVERAGE_CAP_MONTHS,
-  PRICING_TIERS,
+  PRICING_FACTOR,
   RISK_ADD_ON_TIERS,
 } from './constants';
 import type { QuoteInput, OfferPayload, SubletAllowed } from './types';
@@ -63,32 +62,22 @@ export function computeFlexScore(riskScore: number): number {
 }
 
 export function computeMonthlyPrice(rent: number, riskScore: number): number {
-  // Find base price from tier
-  let basePrice = 19; // default fallback
-  for (const tier of PRICING_TIERS) {
-    if (rent >= tier.min && rent <= tier.max) {
-      basePrice = tier.price;
-      break;
-    }
-  }
+  // Continuous pricing: ~1.55% of (effective rent - deductible)
+  const effectiveRent = Math.min(rent, COVERAGE_CAP_MAX);
+  const netPayout = Math.max(0, effectiveRent - DEDUCTIBLE);
+  let basePrice = Math.max(PRICE_FLOOR, Math.ceil(netPayout * PRICING_FACTOR));
 
-  // Below minimum tier
-  if (rent < 1500) {
-    basePrice = 19;
-  }
-
-  // Risk add-on only for $10k+ tier
-  let addon = 0;
+  // Risk add-on for $10k+ rent
   if (rent >= 10000) {
     for (const tier of RISK_ADD_ON_TIERS) {
       if (riskScore >= tier.min && riskScore <= tier.max) {
-        addon = tier.addon;
+        basePrice += tier.addon;
         break;
       }
     }
   }
 
-  return Math.min(basePrice + addon, PRICE_CEILING);
+  return Math.min(basePrice, PRICE_CEILING);
 }
 
 export function computeCoverageCap(rent: number): number {
@@ -96,10 +85,12 @@ export function computeCoverageCap(rent: number): number {
 }
 
 export function computeWaitingPeriod(monthsRemaining: number): number {
-  if (monthsRemaining <= MONTHS_REMAINING_MANUAL_REVIEW_THRESHOLD) {
-    return WAITING_PERIOD_MANUAL_REVIEW;
-  }
-  return WAITING_PERIOD_DEFAULT;
+  // Graduated waiting period — less time left = longer wait
+  if (monthsRemaining <= 3) return 180;   // manual review territory
+  if (monthsRemaining <= 5) return 120;
+  if (monthsRemaining <= 8) return 90;
+  if (monthsRemaining <= 11) return 75;
+  return WAITING_PERIOD_DEFAULT;           // 12+ months: 60 days
 }
 
 export function generateOffer(input: QuoteInput): OfferPayload {
@@ -118,7 +109,7 @@ export function generateOffer(input: QuoteInput): OfferPayload {
   const monthlyPrice = computeMonthlyPrice(input.monthly_rent, riskScore);
   const coverageCap = computeCoverageCap(input.monthly_rent);
   const waitingPeriodDays = computeWaitingPeriod(monthsRemaining);
-  const requiresManualReview = monthsRemaining <= MONTHS_REMAINING_MANUAL_REVIEW_THRESHOLD;
+  const requiresManualReview = monthsRemaining <= 3;
   const requiresConcierge = input.monthly_rent >= RENT_CONCIERGE_THRESHOLD;
 
   return {

@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 function getLeaseFlexPrice(rent: number): number {
-  if (rent < 3000) return 19;
-  if (rent < 6000) return 39;
-  if (rent < 10000) return 79;
-  return 149;
+  const effectiveRent = Math.min(rent, 15000);
+  const netPayout = Math.max(0, effectiveRent - 1500);
+  return Math.max(9, Math.ceil(netPayout * 0.0155));
 }
 
 function formatMoney(n: number): string {

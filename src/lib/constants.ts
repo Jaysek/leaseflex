@@ -5,20 +5,19 @@ export const WAITING_PERIOD_MANUAL_REVIEW = 180;
 export const MINIMUM_COMMITMENT_DAYS = 90;
 export const MONTHS_REMAINING_MANUAL_REVIEW_THRESHOLD = 3;
 export const RENT_CONCIERGE_THRESHOLD = 15000;
-export const PRICE_CEILING = 199;
+export const PRICE_FLOOR = 9;
+export const PRICE_CEILING = 219;
 export const COVERAGE_CAP_MAX = 15000;
 export const COVERAGE_CAP_MONTHS = 1;
 
-export const PRICING_TIERS = [
-  { min: 1500, max: 2999, price: 19 },
-  { min: 3000, max: 5999, price: 39 },
-  { min: 6000, max: 9999, price: 79 },
-  { min: 10000, max: Infinity, price: 149 },
-] as const;
+// Continuous pricing: ~1.55% of (rent - deductible), derived from
+// 10.1% claim rate / 60% target loss ratio / 12 months × 1.10 margin
+export const PRICING_FACTOR = 0.0155;
 
+// Risk add-on for $10k+ rent leases (applied on top of base price)
 export const RISK_ADD_ON_TIERS = [
-  { min: 70, max: 100, addon: 30 },
-  { min: 50, max: 69, addon: 15 },
+  { min: 70, max: 100, addon: 20 },
+  { min: 50, max: 69, addon: 10 },
   { min: 30, max: 49, addon: 5 },
   { min: 0, max: 29, addon: 0 },
 ] as const;
