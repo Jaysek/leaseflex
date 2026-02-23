@@ -11,7 +11,7 @@ const comparisons = [
 
 export default function TrustSignals() {
   return (
-    <section className="py-24 bg-neutral-50">
+    <section className="py-24 bg-sand">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -22,9 +22,9 @@ export default function TrustSignals() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-neutral-100 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-sand-dark overflow-hidden">
           {/* Header */}
-          <div className="grid grid-cols-3 px-6 py-4 border-b border-neutral-100 bg-neutral-50/50">
+          <div className="grid grid-cols-3 px-6 py-4 border-b border-sand-dark bg-sand/50">
             <div />
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider text-center">
               Traditional

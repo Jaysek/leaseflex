@@ -40,10 +40,10 @@ export default function Hero() {
       {/* Background layers */}
       <div className="absolute inset-0 hero-gradient" />
       <div className="absolute inset-0 hero-grid opacity-[0.35]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cream" />
 
       <div className="relative max-w-3xl mx-auto px-6 text-center">
-        <div className="inline-flex items-center gap-2 mt-8 mb-14 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-neutral-200/60 shadow-sm">
+        <div className="inline-flex items-center gap-2 mt-8 mb-14 px-4 py-2 rounded-full bg-white/70 backdrop-blur-sm border border-sand-dark/60 shadow-sm">
           <Shield className="w-3.5 h-3.5 text-neutral-500" />
           <span className="text-xs font-medium text-neutral-600">
             Going live Spring &apos;26
@@ -74,7 +74,7 @@ export default function Hero() {
           <button
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="group inline-flex items-center gap-2 px-6 py-4 bg-white/80 backdrop-blur-sm text-neutral-700 text-sm font-medium rounded-full border border-neutral-200 hover:border-neutral-300 hover:bg-white disabled:opacity-50 transition-all"
+            className="group inline-flex items-center gap-2 px-6 py-4 bg-white/70 backdrop-blur-sm text-neutral-700 text-sm font-medium rounded-full border border-sand-dark hover:border-neutral-300 hover:bg-white disabled:opacity-50 transition-all"
           >
             {uploading ? (
               <>

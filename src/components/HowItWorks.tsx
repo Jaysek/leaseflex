@@ -39,7 +39,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-28 bg-neutral-50">
+    <section id="how-it-works" className="py-28 bg-sand">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-sm font-medium text-neutral-400 uppercase tracking-widest mb-3">
@@ -81,7 +81,7 @@ export default function HowItWorks() {
 
               {/* Arrow connector (between cards on desktop) */}
               {i < steps.length - 1 && (
-                <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-white border border-neutral-200 items-center justify-center">
+                <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-white border border-sand-dark items-center justify-center">
                   <ChevronRight className="w-3 h-3 text-neutral-400" />
                 </div>
               )}

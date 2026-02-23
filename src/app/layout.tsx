@@ -80,7 +80,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${geist.variable} font-sans antialiased bg-white text-neutral-900`}>
+      <body className={`${geist.variable} font-sans antialiased bg-cream text-neutral-900`}>
         <Navbar />
         <main className="pt-16 animate-page-in">{children}</main>
         <Footer />

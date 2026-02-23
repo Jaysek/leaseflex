@@ -24,7 +24,7 @@ export default function WhenItPaysForItself() {
   ];
 
   return (
-    <section className="py-24 bg-neutral-50">
+    <section className="py-24 bg-sand">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
@@ -39,7 +39,7 @@ export default function WhenItPaysForItself() {
           {scenarios.map((s) => (
             <div
               key={s.title}
-              className="bg-white rounded-2xl border border-neutral-100 p-6 flex flex-col"
+              className="bg-white rounded-2xl border border-sand-dark p-6 flex flex-col"
             >
               <span className="text-3xl mb-4">{s.emoji}</span>
               <h3 className="text-base font-semibold text-neutral-900 mb-6">
