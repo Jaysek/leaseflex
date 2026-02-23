@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 function getLeaseFlexPrice(rent: number): number {
-  if (rent < 3000) return 12;
-  if (rent < 6000) return 20;
-  if (rent < 10000) return 35;
-  return 50;
+  if (rent < 3000) return 19;
+  if (rent < 6000) return 39;
+  if (rent < 10000) return 79;
+  return 149;
 }
 
 function formatMoney(n: number): string {
@@ -122,9 +122,9 @@ export default function LeaseCostCalculator() {
           {/* Anchors */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
             {[
-              { emoji: '\u2615', label: 'one coffee per week' },
-              { emoji: '\u{1F355}', label: 'one pizza per month' },
-              { emoji: '\u{1F695}', label: 'one Uber ride' },
+              { emoji: '\u{1F4F1}', label: 'a phone bill' },
+              { emoji: '\u{1F3CB}', label: 'a gym membership' },
+              { emoji: '\u{1F4E6}', label: 'a streaming bundle' },
             ].map((item) => (
               <span
                 key={item.label}

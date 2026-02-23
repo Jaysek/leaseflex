@@ -64,7 +64,7 @@ export function computeFlexScore(riskScore: number): number {
 
 export function computeMonthlyPrice(rent: number, riskScore: number): number {
   // Find base price from tier
-  let basePrice = 12; // default fallback
+  let basePrice = 19; // default fallback
   for (const tier of PRICING_TIERS) {
     if (rent >= tier.min && rent <= tier.max) {
       basePrice = tier.price;
@@ -74,7 +74,7 @@ export function computeMonthlyPrice(rent: number, riskScore: number): number {
 
   // Below minimum tier
   if (rent < 1500) {
-    basePrice = 12;
+    basePrice = 19;
   }
 
   // Risk add-on only for $10k+ tier

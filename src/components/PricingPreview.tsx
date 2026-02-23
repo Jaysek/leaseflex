@@ -4,12 +4,12 @@ import { Check, ArrowRight } from 'lucide-react';
 const tiers = [
   {
     name: 'Starter',
-    price: '$12',
-    coverage: 'Up to $7,500',
+    price: '$19',
+    coverage: 'Up to $3,000',
     description: 'Essential protection for lower-rent apartments.',
     features: [
-      'Coverage up to $7,500',
-      '$500 deductible',
+      'Coverage up to 1x monthly rent',
+      '$1,500 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
     ],
@@ -17,12 +17,12 @@ const tiers = [
   },
   {
     name: 'Core',
-    price: '$20',
-    coverage: 'Up to $15,000',
+    price: '$39',
+    coverage: 'Up to $6,000',
     description: 'Our most popular plan. Full coverage for most renters.',
     features: [
-      'Coverage up to $15,000',
-      '$500 deductible',
+      'Coverage up to 1x monthly rent',
+      '$1,500 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
       'Faster payouts',
@@ -31,12 +31,12 @@ const tiers = [
   },
   {
     name: 'Premium',
-    price: '$45',
-    coverage: 'Up to $30,000',
+    price: '$149',
+    coverage: 'Up to $15,000',
     description: 'Maximum protection for high-rent leases.',
     features: [
-      'Coverage up to $30,000',
-      '$500 deductible',
+      'Coverage up to 1x monthly rent',
+      '$1,500 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
       'Faster payouts',

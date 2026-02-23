@@ -43,7 +43,7 @@ export default function Home() {
             One life change can cost $10,000.
           </p>
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-white leading-tight">
-            LeaseFlex costs $20.
+            LeaseFlex costs $39.
           </h2>
           <p className="mt-6 text-neutral-500">
             Get your personalized offer in under 2 minutes.

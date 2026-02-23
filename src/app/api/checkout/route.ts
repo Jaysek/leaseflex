@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (isStripeConfigured()) {
       const stripe = getStripe()!;
       const origin = request.headers.get('origin') || 'http://localhost:3000';
-      const priceInCents = Math.round((monthly_price || 12) * 100);
+      const priceInCents = Math.round((monthly_price || 19) * 100);
 
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
