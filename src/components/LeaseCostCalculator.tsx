@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 
 function getLeaseFlexPrice(rent: number): number {
   const effectiveRent = Math.min(rent, 15000);
-  const netPayout = Math.max(0, effectiveRent - 1500);
+  const netPayout = Math.max(0, effectiveRent - 750);
   return Math.max(9, Math.ceil(netPayout * 0.0155));
 }
 

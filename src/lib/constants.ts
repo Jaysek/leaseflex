@@ -1,4 +1,4 @@
-export const DEDUCTIBLE = 1500;
+export const DEDUCTIBLE = 750;
 export const MAX_CLAIMS_PER_TERM = 1;
 export const WAITING_PERIOD_DEFAULT = 60;
 export const WAITING_PERIOD_MANUAL_REVIEW = 180;

@@ -34,7 +34,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-neutral-900 mb-3">3. Coverage &amp; Pricing</h2>
             <p>
               LeaseFlex coverage is subject to a waiting period (60 or 180 days depending on your lease terms),
-              a $1,500 deductible, and a coverage cap as stated in your offer. Pricing is based on your monthly
+              a $750 deductible, and a coverage cap as stated in your offer. Pricing is based on your monthly
               rent, lease terms, and risk profile. Rates are locked for 48 hours from the time of your offer.
             </p>
           </section>

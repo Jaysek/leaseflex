@@ -3,7 +3,7 @@ import { Check, ArrowRight } from 'lucide-react';
 
 function getPrice(rent: number): number {
   const effectiveRent = Math.min(rent, 15000);
-  const netPayout = Math.max(0, effectiveRent - 1500);
+  const netPayout = Math.max(0, effectiveRent - 750);
   return Math.max(9, Math.ceil(netPayout * 0.0155));
 }
 
@@ -14,7 +14,7 @@ const examples = [
     description: 'Studios & 1-bedrooms in most cities.',
     features: [
       'Coverage up to 1x monthly rent',
-      '$1,500 deductible',
+      '$750 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
     ],
@@ -26,7 +26,7 @@ const examples = [
     description: 'Our most common renter. 1–2 bedrooms in major metros.',
     features: [
       'Coverage up to 1x monthly rent',
-      '$1,500 deductible',
+      '$750 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
       'Faster payouts',
@@ -39,7 +39,7 @@ const examples = [
     description: 'Premium apartments & luxury leases.',
     features: [
       'Coverage up to 1x monthly rent',
-      '$1,500 deductible',
+      '$750 deductible',
       'Coverage starts after 60 days',
       '1 covered claim per lease',
       'Faster payouts',

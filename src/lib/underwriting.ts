@@ -36,7 +36,7 @@ export const ASSUMPTIONS = {
   avgPenaltyMonths: 2,
 
   // Deductible amount
-  deductible: 1500,
+  deductible: 750,
 
   // Coverage cap multiplier
   coverageCapMultiplier: 1,
