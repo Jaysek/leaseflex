@@ -5,21 +5,21 @@ export default function WhenItPaysForItself() {
   const scenarios = [
     {
       emoji: '\u{1F4BC}',
-      title: 'New job in another city',
-      without: '$8,000\u2013$12,000 termination fees',
-      with: '$0',
+      title: 'Job relocation',
+      without: '$8K\u2013$12K in fees + months of double rent',
+      with: 'Leave clean. LeaseFlex pays.',
     },
     {
       emoji: '\u{1F3E0}',
-      title: 'Buying your first home',
-      without: 'Thousands in penalties',
-      with: 'Walk away',
+      title: 'Buying a home',
+      without: 'Penalties, remaining rent, or collections',
+      with: 'Walk away with no financial damage',
     },
     {
       emoji: '\u{1F494}',
       title: 'Relationship change',
-      without: "You\u2019re stuck paying rent",
-      with: 'Leave when life changes',
+      without: 'Stuck paying rent you can\u2019t afford alone',
+      with: 'Exit on your terms, credit intact',
     },
   ];
 
@@ -28,10 +28,10 @@ export default function WhenItPaysForItself() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
-            Life changes, but your lease doesn&apos;t.
+            The real cost of leaving isn&apos;t just the fee.
           </h2>
           <p className="mt-4 text-lg text-neutral-500 max-w-xl mx-auto leading-relaxed">
-            A new job, a breakup, a family emergency — any of these can cost you thousands in penalties. LeaseFlex makes sure they don&apos;t.
+            It&apos;s termination penalties, months of double rent, collections threats, and credit damage. One life change can follow you for years.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function WhenItPaysForItself() {
 
         <div className="text-center">
           <p className="text-lg font-semibold text-neutral-900 mb-8">
-            LeaseFlex protects renters when life changes unexpectedly.
+            LeaseFlex covers the fees, protects your credit, and lets you move on.
           </p>
           <Link
             href="/offer"

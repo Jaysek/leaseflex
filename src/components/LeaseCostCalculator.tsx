@@ -27,10 +27,10 @@ export default function LeaseCostCalculator() {
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900">
-            What breaking your lease actually costs
+            What leaving actually costs you
           </h2>
           <p className="mt-4 text-neutral-500 max-w-xl mx-auto">
-            Most leases include penalties that can total $5,000&ndash;$15,000 if you need to move early.
+            Termination fees, months of remaining rent, double rent while you transition — one move can cost $5,000&ndash;$15,000 or more.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export default function LeaseCostCalculator() {
                 <p className="text-[10px] text-neutral-400 uppercase tracking-wider font-medium mb-1">Your liability</p>
                 <p className="text-3xl font-bold text-neutral-900 tabular-nums">${formatMoney(totalPenalty)}</p>
                 <p className="mt-1.5 text-xs text-neutral-400">
-                  Due immediately out of pocket
+                  Due immediately — or sent to collections
                 </p>
               </div>
             </div>

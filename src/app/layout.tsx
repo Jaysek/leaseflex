@@ -11,14 +11,14 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "LeaseFlex — Break your lease without the penalty.",
+  title: "LeaseFlex — Move on your terms. Skip the wreckage.",
   description:
-    "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
+    "Lease breaks cost thousands in fees, double rent, and credit damage. LeaseFlex covers it all — starting at $9/month.",
   metadataBase: new URL("https://leaseflex.io"),
   openGraph: {
-    title: "Break your lease without the penalty.",
+    title: "Move on your terms. Skip the wreckage.",
     description:
-      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
+      "Lease breaks cost thousands in fees, double rent, and credit damage. LeaseFlex covers it all — starting at $9/month.",
     url: "https://leaseflex.io",
     siteName: "LeaseFlex",
     type: "website",
@@ -28,15 +28,15 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "LeaseFlex — Break your lease without the penalty",
+        alt: "LeaseFlex — Move on your terms. Skip the wreckage.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Break your lease without the penalty.",
+    title: "Move on your terms. Skip the wreckage.",
     description:
-      "LeaseFlex covers early termination fees so you can move when life changes. Starting at $9/month.",
+      "Lease breaks cost thousands in fees, double rent, and credit damage. LeaseFlex covers it all — starting at $9/month.",
     images: ["/og.png"],
   },
   icons: {

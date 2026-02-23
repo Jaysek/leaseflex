@@ -40,10 +40,10 @@ export default function Home() {
         <div className="absolute inset-0 hero-grid opacity-[0.08]" />
         <div className="relative max-w-2xl mx-auto px-6 text-center">
           <p className="text-lg text-neutral-400 mb-6">
-            One life change can cost $10,000.
+            Fees. Double rent. Collections. Credit damage.
           </p>
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight text-white leading-tight">
-            LeaseFlex starts at $9.
+            Or $9/month for LeaseFlex.
           </h2>
           <p className="mt-6 text-neutral-500">
             Get your personalized offer in under 2 minutes.

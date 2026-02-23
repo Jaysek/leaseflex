@@ -3,11 +3,12 @@ import { Check, X } from 'lucide-react';
 const items = [
   { item: 'Early termination fees', covered: true },
   { item: 'Lease break penalties', covered: true },
-  { item: 'Remaining rent you\'d owe', covered: true, note: 'Capped per plan' },
+  { item: 'Remaining rent obligations', covered: true, note: 'Capped per plan' },
+  { item: 'Double rent exposure', covered: true, note: 'During transition period' },
+  { item: 'Collections & credit protection', covered: true, note: 'Clean exit guaranteed' },
   { item: 'Moving costs', covered: false },
   { item: 'Security deposits', covered: false },
   { item: 'Property damages', covered: false },
-  { item: 'Unpaid utilities', covered: false },
 ];
 
 export default function CoverageTable() {
@@ -19,7 +20,7 @@ export default function CoverageTable() {
             What&apos;s covered
           </h2>
           <p className="mt-3 text-neutral-500">
-            We cover the fees that make leaving expensive. Nothing more, nothing less.
+            Termination fees, remaining rent, double rent, collections — we cover the penalties that trap renters.
           </p>
         </div>
 

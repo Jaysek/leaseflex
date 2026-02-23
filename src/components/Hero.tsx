@@ -51,15 +51,15 @@ export default function Hero() {
         </div>
 
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight text-neutral-900 leading-[1.08]">
-          Break your lease
+          Move on your terms.
           <br />
           <span className="bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 bg-clip-text text-transparent">
-            without the penalty.
+            Skip the wreckage.
           </span>
         </h1>
 
         <p className="mt-6 text-lg md:text-xl text-neutral-700 max-w-xl mx-auto leading-relaxed">
-          Starting at <span className="font-semibold text-neutral-900">$9/month</span>. Price scales with your rent — get your exact quote in 60 seconds.
+          Lease breaks cost thousands in fees, double rent, and credit damage. LeaseFlex covers it all — starting at <span className="font-semibold text-neutral-900">$9/month</span>.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -106,7 +106,7 @@ export default function Hero() {
         </p>
 
         <p className="mt-3 text-sm text-neutral-500">
-          No credit check &middot; Cancel anytime &middot; Not all leases qualify
+          No credit check &middot; No collections &middot; Cancel anytime
         </p>
       </div>
     </section>

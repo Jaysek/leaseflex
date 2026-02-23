@@ -27,7 +27,7 @@ const steps = [
   {
     icon: ShieldCheck,
     title: 'Walk away protected',
-    description: 'When life changes, let us know. LeaseFlex pays the early termination fees so you don\'t have to.',
+    description: 'When life changes, let us know. LeaseFlex covers the penalties — termination fees, remaining rent, all of it. No collections, no credit damage.',
     detail: 'Money in your account in 5 business days',
     accent: 'from-emerald-500 to-emerald-600',
     bg: 'bg-emerald-50',

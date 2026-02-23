@@ -6,11 +6,11 @@ import { ChevronDown } from 'lucide-react';
 const faqs = [
   {
     q: 'What is LeaseFlex?',
-    a: 'LeaseFlex is a monthly subscription that covers the fees your landlord charges if you need to break your lease early.',
+    a: 'LeaseFlex is a monthly subscription that covers the financial penalties of breaking your lease — termination fees, remaining rent obligations, and the costs that lead to collections and credit damage.',
   },
   {
     q: 'What happens if I need to break my lease?',
-    a: 'Just let us know and share some basic info about why you\'re leaving. LeaseFlex pays the fees your landlord charges for breaking the lease.',
+    a: 'Let us know and share some basic info about why you\'re leaving. LeaseFlex pays the penalties your landlord charges for breaking the lease, so you leave cleanly with no collections or credit damage.',
   },
   {
     q: 'What reasons are covered?',
