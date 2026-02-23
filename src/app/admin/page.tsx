@@ -22,6 +22,14 @@ interface WaitlistEntry {
   id: string;
   created_at: string;
   email: string;
+  name: string | null;
+  phone: string | null;
+  offer_id: string | null;
+  monthly_price: number | null;
+  flex_score: number | null;
+  coverage_cap: number | null;
+  city: string | null;
+  state: string | null;
   drip_step: number;
 }
 
@@ -244,15 +252,27 @@ export default function AdminPage() {
                 <thead>
                   <tr className="border-b border-neutral-100">
                     <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Date</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Name</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Email</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Drip Step</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Phone</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Location</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Price</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Coverage</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Score</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-neutral-400 uppercase tracking-wider">Drip</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.waitlist.map((w) => (
                     <tr key={w.id} className="border-b border-neutral-50 hover:bg-neutral-50 transition-colors">
                       <td className="px-4 py-3 text-neutral-400 whitespace-nowrap">{formatDate(w.created_at)}</td>
-                      <td className="px-4 py-3 text-neutral-900">{w.email}</td>
+                      <td className="px-4 py-3 font-medium text-neutral-900">{w.name || '—'}</td>
+                      <td className="px-4 py-3 text-neutral-500">{w.email}</td>
+                      <td className="px-4 py-3 text-neutral-500">{w.phone || '—'}</td>
+                      <td className="px-4 py-3 text-neutral-500 whitespace-nowrap">{w.city && w.state ? `${w.city}, ${w.state}` : '—'}</td>
+                      <td className="px-4 py-3 text-neutral-900 text-right tabular-nums">{w.monthly_price ? `$${w.monthly_price}/mo` : '—'}</td>
+                      <td className="px-4 py-3 text-neutral-900 text-right tabular-nums">{w.coverage_cap ? `$${w.coverage_cap.toLocaleString()}` : '—'}</td>
+                      <td className="px-4 py-3 text-neutral-900 text-right tabular-nums">{w.flex_score ?? '—'}</td>
                       <td className="px-4 py-3 text-neutral-500 text-right tabular-nums">{w.drip_step}/3</td>
                     </tr>
                   ))}
