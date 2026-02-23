@@ -37,6 +37,12 @@ export default function Navbar() {
           >
             For Landlords
           </Link>
+          <Link
+            href="/dashboard"
+            className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+          >
+            Dashboard
+          </Link>
         </div>
 
         <Link

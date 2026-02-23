@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldX, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 function getLeaseFlexPrice(rent: number): number {
   if (rent < 3000) return 12;
@@ -63,14 +63,11 @@ export default function LeaseCostCalculator() {
 
           {/* Side-by-side comparison */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Without LeaseFlex — danger */}
-            <div className="bg-red-50/60 rounded-xl border border-red-200/60 p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <ShieldX className="w-4 h-4 text-red-400" />
-                <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-                  Without LeaseFlex
-                </p>
-              </div>
+            {/* Without LeaseFlex */}
+            <div className="bg-white rounded-xl border border-neutral-200 p-6">
+              <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-5">
+                Without LeaseFlex
+              </p>
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500">Early termination</span>
@@ -81,40 +78,34 @@ export default function LeaseCostCalculator() {
                   <span className="font-medium text-neutral-900 tabular-nums">${formatMoney(remainingRent)}</span>
                 </div>
               </div>
-              <div className="pt-4 border-t border-red-200/40">
-                <p className="text-[10px] text-red-400 uppercase tracking-wider font-medium mb-1">Your liability</p>
-                <p className="text-3xl font-bold text-red-600 tabular-nums">${formatMoney(totalPenalty)}</p>
-                <p className="mt-1.5 text-xs text-red-400">
+              <div className="pt-4 border-t border-neutral-100">
+                <p className="text-[10px] text-neutral-400 uppercase tracking-wider font-medium mb-1">Your liability</p>
+                <p className="text-3xl font-bold text-neutral-900 tabular-nums">${formatMoney(totalPenalty)}</p>
+                <p className="mt-1.5 text-xs text-neutral-400">
                   Due immediately out of pocket
                 </p>
               </div>
             </div>
 
-            {/* With LeaseFlex — safe */}
-            <div className="bg-emerald-50/60 rounded-xl border-2 border-emerald-600 p-6 relative">
-              <div className="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-emerald-600 text-white text-[10px] font-semibold uppercase tracking-wider rounded">
-                Protected
-              </div>
-              <div className="flex items-center gap-2 mb-5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">
-                  With LeaseFlex
-                </p>
-              </div>
+            {/* With LeaseFlex */}
+            <div className="bg-white rounded-xl border-2 border-neutral-900 p-6">
+              <p className="text-xs font-semibold text-neutral-900 uppercase tracking-wider mb-5">
+                With LeaseFlex
+              </p>
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500">Early termination</span>
-                  <span className="font-medium text-neutral-400 tabular-nums line-through">${formatMoney(terminationFee)}</span>
+                  <span className="font-medium text-neutral-300 tabular-nums line-through">${formatMoney(terminationFee)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500">Remaining rent owed</span>
-                  <span className="font-medium text-neutral-400 tabular-nums line-through">${formatMoney(remainingRent)}</span>
+                  <span className="font-medium text-neutral-300 tabular-nums line-through">${formatMoney(remainingRent)}</span>
                 </div>
               </div>
-              <div className="pt-4 border-t border-emerald-200/60">
-                <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-medium mb-1">Your liability</p>
-                <p className="text-3xl font-bold text-emerald-600 tabular-nums">$0</p>
-                <p className="mt-1.5 text-xs text-emerald-500">
+              <div className="pt-4 border-t border-neutral-200">
+                <p className="text-[10px] text-neutral-900 uppercase tracking-wider font-medium mb-1">Your liability</p>
+                <p className="text-3xl font-bold text-neutral-900 tabular-nums">$0</p>
+                <p className="mt-1.5 text-xs text-neutral-400">
                   Covered for just ${monthlyPrice}/mo
                 </p>
               </div>
@@ -122,13 +113,9 @@ export default function LeaseCostCalculator() {
           </div>
 
           {/* Savings callout */}
-          <div className="bg-neutral-900 rounded-xl p-6 text-center mb-8">
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-2">You&apos;d save</p>
-            <p className="text-2xl md:text-3xl font-bold text-white tabular-nums mb-1">
-              ${formatMoney(totalPenalty)}
-            </p>
-            <p className="text-sm text-neutral-400">
-              protected for just ${monthlyPrice}/month
+          <div className="flex items-center justify-center gap-2 py-4 mb-4">
+            <p className="text-sm text-neutral-500">
+              You&apos;d save <span className="font-semibold text-neutral-900">${formatMoney(totalPenalty)}</span> for just ${monthlyPrice}/mo
             </p>
           </div>
 

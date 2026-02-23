@@ -415,6 +415,26 @@ export default function LandlordsPage() {
         </div>
       </section>
 
+      {/* Metrics */}
+      <section className="py-20 bg-white border-t border-neutral-100">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">24%</p>
+              <p className="text-sm text-neutral-500 mt-2">of renters break their lease early</p>
+            </div>
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">$4,200</p>
+              <p className="text-sm text-neutral-500 mt-2">average cost of a lease break</p>
+            </div>
+            <div>
+              <p className="text-4xl md:text-5xl font-bold text-neutral-900 tracking-tight">2.3x</p>
+              <p className="text-sm text-neutral-500 mt-2">faster lease conversion with flexibility</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section id="partner" className="py-24 md:py-32 bg-neutral-900 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.15]" style={{
@@ -433,13 +453,25 @@ export default function LandlordsPage() {
             While keeping your property financially protected.
           </p>
 
-          <a
-            href="mailto:justin@leaseflex.io"
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-neutral-900 text-sm font-medium rounded-full hover:bg-neutral-100 transition-colors"
-          >
-            Partner with LeaseFlex
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="mailto:justin@leaseflex.io?subject=LeaseFlex%20Partnership%20Inquiry"
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-neutral-900 text-sm font-medium rounded-full hover:bg-neutral-100 transition-colors"
+            >
+              Partner with LeaseFlex
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+            <a
+              href="mailto:justin@leaseflex.io?subject=Schedule%20a%20Call%20-%20LeaseFlex"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-transparent text-white text-sm font-medium rounded-full border border-neutral-700 hover:border-neutral-500 transition-colors"
+            >
+              Schedule a call
+            </a>
+          </div>
+
+          <p className="mt-8 text-sm text-neutral-500">
+            No integration required &middot; Free for property owners &middot; Launch in under a week
+          </p>
         </div>
       </section>
     </main>

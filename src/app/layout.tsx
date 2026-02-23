@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -48,12 +49,42 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FinancialProduct',
+    name: 'LeaseFlex Lease Protection',
+    description: 'Monthly subscription that covers lease-break penalties, early termination fees, and remaining rent obligations.',
+    provider: {
+      '@type': 'Organization',
+      name: 'LeaseFlex',
+      url: 'https://leaseflex.io',
+    },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: '12',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: '12',
+        priceCurrency: 'USD',
+        billingDuration: 'P1M',
+      },
+    },
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${geist.variable} font-sans antialiased bg-white text-neutral-900`}>
         <Navbar />
         <main className="pt-16 animate-page-in">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

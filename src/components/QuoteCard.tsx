@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import {
   ArrowRight,
   Shield,
-  ShieldX,
   ShieldCheck,
   Clock,
   DollarSign,
@@ -17,11 +16,39 @@ import {
   ChevronDown,
   Send,
   Calendar,
+  Lock,
+  Info,
 } from 'lucide-react';
 import AnimatedNumber from './AnimatedNumber';
+import FlexScoreGauge from './FlexScoreGauge';
 import { COVERED_ITEMS, NOT_COVERED_ITEMS } from '@/lib/constants';
 import type { OfferPayload } from '@/lib/types';
 import { track } from '@/lib/analytics';
+
+function PlanRow({ icon: Icon, label, value, tip }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; tip: string }) {
+  const [showTip, setShowTip] = useState(false);
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Icon className="w-3.5 h-3.5 text-neutral-300" />
+          <span className="text-sm text-neutral-500">{label}</span>
+          <button
+            onClick={() => setShowTip(!showTip)}
+            className="text-neutral-300 hover:text-neutral-500 transition-colors"
+            aria-label={`What is ${label}?`}
+          >
+            <Info className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <span className="text-sm font-semibold text-neutral-900">{value}</span>
+      </div>
+      {showTip && (
+        <p className="mt-1.5 ml-[22px] text-xs text-neutral-400 leading-relaxed">{tip}</p>
+      )}
+    </div>
+  );
+}
 
 interface QuoteCardProps {
   offer: OfferPayload;
@@ -53,14 +80,37 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
   }, [step]);
 
   const handleStartProtection = () => {
-    track('start_protection_clicked', { offer_id: offer.id, monthly_price: offer.monthly_price });
+    track('start_protection_clicked', { offer_id: offer.id || '', monthly_price: offer.monthly_price });
     setStep('capture');
   };
 
   const handleSubmit = async () => {
     if (!email || !name) return;
-    track('protection_submitted', { offer_id: offer.id, monthly_price: offer.monthly_price, city: offer.city });
+    track('protection_submitted', { offer_id: offer.id || '', monthly_price: offer.monthly_price, city: offer.city || '' });
     setLoading(true);
+
+    // Try Stripe checkout first
+    try {
+      const checkoutRes = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          offer_id: offer.id,
+          monthly_price: offer.monthly_price,
+          city: offer.city,
+          state: offer.state,
+        }),
+      });
+      const checkoutData = await checkoutRes.json();
+      if (checkoutData.checkout_url) {
+        // Store email for dashboard access
+        sessionStorage.setItem('leaseflex_email', email.toLowerCase().trim());
+        window.location.href = checkoutData.checkout_url;
+        return;
+      }
+    } catch { /* fall through to waitlist */ }
+
+    // Fallback: join waitlist
     try {
       await fetch('/api/waitlist', {
         method: 'POST',
@@ -82,7 +132,7 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
 
   const handleEmailQuote = async () => {
     if (!emailInput) return;
-    track('email_quote_clicked', { offer_id: offer.id });
+    track('email_quote_clicked', { offer_id: offer.id || '' });
     setEmailSending(true);
     try {
       await fetch('/api/email-offer', {
@@ -113,6 +163,17 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
 
   const waitingDate = new Date();
   waitingDate.setDate(waitingDate.getDate() + offer.waiting_period_days);
+
+  const quoteRef = offer.id ? `LF-${offer.id.slice(0, 6).toUpperCase()}` : null;
+  const createdDate = offer.created_at
+    ? new Date(offer.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const expiresDate = new Date(offer.created_at ? new Date(offer.created_at) : new Date());
+  expiresDate.setDate(expiresDate.getDate() + 30);
+  const expiresStr = expiresDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const leaseEndFormatted = new Date(offer.lease_end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   // ─── Confirmed ───
   if (step === 'confirmed') {
@@ -182,6 +243,12 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
   return (
     <>
       <div className="space-y-10">
+        {/* ── Quote header ── */}
+        <div className="flex items-center justify-between text-[11px] text-neutral-400">
+          <span>{quoteRef && `${quoteRef} \u00B7 `}{createdDate}</span>
+          <span>Valid until {expiresStr}</span>
+        </div>
+
         {/* Alert badges */}
         {(offer.requires_manual_review || offer.requires_concierge) && (
           <div className="flex flex-wrap gap-2">
@@ -198,94 +265,112 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
           </div>
         )}
 
-        {/* ── Risk comparison ── */}
-        <div>
-          <div className="grid grid-cols-2 gap-4">
-            {/* WITHOUT */}
-            <div className="relative rounded-2xl bg-gradient-to-b from-red-50 to-red-50/30 border border-red-100 p-5 sm:p-6">
-              <div className="flex items-center gap-1.5 mb-6">
-                <ShieldX className="w-4 h-4 text-red-400" />
-                <span className="text-[11px] font-semibold text-red-400 uppercase tracking-widest">
-                  Without
-                </span>
-              </div>
-              <p className="text-3xl sm:text-4xl font-bold text-red-600 tabular-nums tracking-tight">
-                <AnimatedNumber value={totalExposure} prefix="$" locale />
-              </p>
-              <div className="mt-4 space-y-1.5">
-                <p className="text-xs text-red-400/80">
-                  {offer.months_remaining} mo &times; ${offer.monthly_rent.toLocaleString()} rent
-                </p>
-                {terminationFee > 0 && (
-                  <p className="text-xs text-red-400/80">
-                    + ${terminationFee.toLocaleString()} termination fee
-                  </p>
-                )}
-              </div>
-              <p className="mt-4 text-[11px] font-medium text-red-500 uppercase tracking-wider">
-                Your risk
-              </p>
-            </div>
+        {/* ── Hero price ── */}
+        <div className="text-center py-2">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-3">
+            Your lease protection rate
+          </p>
+          <p className="text-5xl sm:text-6xl font-bold tracking-tight text-neutral-900 tabular-nums">
+            $<AnimatedNumber value={offer.monthly_price} /><span className="text-2xl font-normal text-neutral-400">/mo</span>
+          </p>
+          <p className="mt-3 text-sm text-neutral-400">
+            Covers up to ${offer.coverage_cap.toLocaleString()} if you need to break your lease
+          </p>
+        </div>
 
-            {/* WITH */}
-            <div className="relative rounded-2xl bg-gradient-to-b from-emerald-50 to-emerald-50/30 border-2 border-emerald-500 p-5 sm:p-6">
-              <div className="absolute -top-3 right-4">
-                <span className="px-3 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
-                  Protected
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 mb-6">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-widest">
-                  With LeaseFlex
-                </span>
-              </div>
-              <p className="text-3xl sm:text-4xl font-bold text-emerald-600 tabular-nums tracking-tight">
-                <AnimatedNumber value={annualCost} prefix="$" locale />
-              </p>
-              <p className="mt-4 text-xs text-emerald-500/80">
-                ${offer.monthly_price}/mo &times; {Math.min(offer.months_remaining, 12)} months
-              </p>
-              <p className="mt-4 text-[11px] font-bold text-emerald-600 uppercase tracking-wider">
-                Save ${(totalExposure - annualCost).toLocaleString()}
-              </p>
+        {/* ── Your lease ── */}
+        <div>
+          <h3 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-4">
+            Your lease
+          </h3>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+            <div className="flex justify-between py-2 border-b border-neutral-100">
+              <span className="text-sm text-neutral-400">Monthly rent</span>
+              <span className="text-sm font-medium text-neutral-900">${offer.monthly_rent.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-neutral-100">
+              <span className="text-sm text-neutral-400">Lease ends</span>
+              <span className="text-sm font-medium text-neutral-900">{leaseEndFormatted}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-neutral-100">
+              <span className="text-sm text-neutral-400">Months left</span>
+              <span className="text-sm font-medium text-neutral-900">{offer.months_remaining}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-neutral-100">
+              <span className="text-sm text-neutral-400">Subletting</span>
+              <span className="text-sm font-medium text-neutral-900">
+                {offer.sublet_allowed === 'yes' ? 'Allowed' : offer.sublet_allowed === 'no' ? 'Not allowed' : 'Unknown'}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* ── Plan details ── */}
-        <div>
-          <h3 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-4">
-            Your plan
-          </h3>
-          <div className="grid grid-cols-4 gap-px bg-neutral-100 rounded-2xl overflow-hidden">
-            <div className="bg-white p-4 sm:p-5 text-center">
-              <Shield className="w-4 h-4 text-neutral-300 mx-auto mb-2" />
-              <p className="text-lg sm:text-xl font-bold text-neutral-900 tabular-nums">
-                ${offer.coverage_cap.toLocaleString()}
+        {/* ── Risk comparison ── */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* WITHOUT */}
+          <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-5 sm:p-6">
+            <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-widest">
+              Without LeaseFlex
+            </span>
+            <p className="mt-4 text-3xl sm:text-4xl font-bold text-neutral-900 tabular-nums tracking-tight">
+              <AnimatedNumber value={totalExposure} prefix="$" locale />
+            </p>
+            <div className="mt-3 space-y-1">
+              <p className="text-xs text-neutral-400">
+                {offer.months_remaining} mo &times; ${offer.monthly_rent.toLocaleString()} rent
               </p>
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wider mt-1">Coverage</p>
+              {terminationFee > 0 && (
+                <p className="text-xs text-neutral-400">
+                  + ${terminationFee.toLocaleString()} termination fee
+                </p>
+              )}
             </div>
-            <div className="bg-white p-4 sm:p-5 text-center">
-              <DollarSign className="w-4 h-4 text-neutral-300 mx-auto mb-2" />
-              <p className="text-lg sm:text-xl font-bold text-neutral-900">
-                ${offer.deductible}
-              </p>
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wider mt-1">Deductible</p>
-            </div>
-            <div className="bg-white p-4 sm:p-5 text-center">
-              <Clock className="w-4 h-4 text-neutral-300 mx-auto mb-2" />
-              <p className="text-lg sm:text-xl font-bold text-neutral-900">
-                {offer.waiting_period_days}d
-              </p>
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wider mt-1">Waiting</p>
-            </div>
-            <div className="bg-white p-4 sm:p-5 text-center">
-              <Calendar className="w-4 h-4 text-neutral-300 mx-auto mb-2" />
-              <p className="text-lg sm:text-xl font-bold text-neutral-900">
-                {waitingDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              </p>
-              <p className="text-[10px] text-neutral-400 uppercase tracking-wider mt-1">Active</p>
+            <p className="mt-4 text-[11px] font-medium text-neutral-400 uppercase tracking-wider">
+              Your risk
+            </p>
+          </div>
+
+          {/* WITH */}
+          <div className="rounded-2xl bg-neutral-50 border-2 border-neutral-900 p-5 sm:p-6">
+            <span className="text-[11px] font-semibold text-neutral-900 uppercase tracking-widest">
+              With LeaseFlex
+            </span>
+            <p className="mt-4 text-3xl sm:text-4xl font-bold text-neutral-900 tabular-nums tracking-tight">
+              $<AnimatedNumber value={offer.monthly_price} /><span className="text-lg font-normal text-neutral-400">/mo</span>
+            </p>
+            <p className="mt-3 text-xs text-neutral-400">
+              Cancel anytime &middot; No commitment
+            </p>
+            <p className="mt-4 text-[11px] font-semibold text-neutral-900 uppercase tracking-wider">
+              Save ${(totalExposure - annualCost).toLocaleString()}
+            </p>
+          </div>
+        </div>
+
+        {/* ── Flex Score + Plan details ── */}
+        <div className="grid grid-cols-5 gap-4">
+          {/* Flex Score */}
+          <div className="col-span-2 rounded-2xl border border-neutral-200 p-5 flex flex-col items-center justify-center">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-3">
+              Flex Score
+            </h3>
+            <FlexScoreGauge score={offer.flex_score} />
+          </div>
+
+          {/* Plan details */}
+          <div className="col-span-3 rounded-2xl border border-neutral-200 p-5">
+            <h3 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-4">
+              Your plan
+            </h3>
+            <div className="space-y-3">
+              <PlanRow icon={Shield} label="Coverage cap" value={`$${offer.coverage_cap.toLocaleString()}`}
+                tip="The maximum amount LeaseFlex will pay toward your lease-break costs per claim." />
+              <PlanRow icon={DollarSign} label="Deductible" value={`$${offer.deductible}`}
+                tip="The amount you pay out-of-pocket before coverage kicks in." />
+              <PlanRow icon={Clock} label="Waiting period" value={`${offer.waiting_period_days} days`}
+                tip="Coverage begins after this period. Claims filed before this date are not eligible." />
+              <PlanRow icon={Calendar} label="Coverage active" value={waitingDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                tip="The earliest date you can file a claim after enrolling." />
             </div>
           </div>
         </div>
@@ -309,12 +394,12 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
 
         {/* ── Coverage ── */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-2xl bg-emerald-50/50 border border-emerald-100 p-5">
-            <h4 className="text-[11px] font-semibold uppercase tracking-widest text-emerald-600 mb-4">Covered</h4>
+          <div className="rounded-2xl bg-neutral-50 border border-neutral-100 p-5">
+            <h4 className="text-[11px] font-semibold uppercase tracking-widest text-neutral-900 mb-4">Covered</h4>
             <ul className="space-y-2.5">
               {COVERED_ITEMS.map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-neutral-700">
-                  <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />{item}
+                  <Check className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0 mt-0.5" />{item}
                 </li>
               ))}
             </ul>
@@ -373,6 +458,15 @@ export default function QuoteCard({ offer }: QuoteCardProps) {
               <Mail className="w-3.5 h-3.5" />Email me this quote
             </button>
           )}
+        </div>
+
+        {/* ── Trust footer ── */}
+        <div className="flex items-center justify-center gap-4 text-[11px] text-neutral-300">
+          <span className="inline-flex items-center gap-1"><Lock className="w-3 h-3" />256-bit encrypted</span>
+          <span>&middot;</span>
+          <span>Your data is never shared</span>
+          <span>&middot;</span>
+          <span>Cancel anytime</span>
         </div>
 
         {/* Fine print */}
