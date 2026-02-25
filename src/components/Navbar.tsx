@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { Shield } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 
 export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-100">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-neutral-900" strokeWidth={1.5} />
+          <Building2 className="w-5 h-5 text-neutral-900" strokeWidth={1.5} />
           <span className="text-base font-semibold tracking-tight text-neutral-900">
             LeaseFlex
           </span>
@@ -30,6 +30,12 @@ export default function Navbar() {
             className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             Coverage
+          </Link>
+          <Link
+            href="/blog"
+            className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+          >
+            Guides
           </Link>
           <Link
             href="/landlords"

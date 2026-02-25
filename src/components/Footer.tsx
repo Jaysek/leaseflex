@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Shield, ArrowRight, Check } from 'lucide-react';
+import { Building2, ArrowRight, Check } from 'lucide-react';
 import { track } from '@/lib/analytics';
 
 export default function Footer() {
@@ -68,7 +68,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Shield className="w-5 h-5 text-neutral-400" strokeWidth={1.5} />
+              <Building2 className="w-5 h-5 text-neutral-400" strokeWidth={1.5} />
               <span className="text-sm font-semibold text-neutral-500">LeaseFlex</span>
             </div>
             <p className="text-sm text-neutral-400 max-w-xs">
@@ -81,6 +81,12 @@ export default function Footer() {
               <Link href="/#how-it-works" className="block hover:text-neutral-600 transition-colors">How it works</Link>
               <Link href="/#pricing" className="block hover:text-neutral-600 transition-colors">Pricing</Link>
               <Link href="/#coverage" className="block hover:text-neutral-600 transition-colors">Coverage</Link>
+            </div>
+            <div className="space-y-2">
+              <p className="font-medium text-neutral-500">Guides</p>
+              <Link href="/break-lease" className="block hover:text-neutral-600 transition-colors">Breaking a Lease</Link>
+              <Link href="/blog/cost-to-move-apartments" className="block hover:text-neutral-600 transition-colors">Moving Costs</Link>
+              <Link href="/blog" className="block hover:text-neutral-600 transition-colors">All Articles</Link>
             </div>
             <div className="space-y-2">
               <p className="font-medium text-neutral-500">Company</p>

@@ -1,163 +1,114 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET || '';
-
-function getDb() {
-  if (!supabaseUrl || !supabaseKey) return null;
-  return createClient(supabaseUrl, supabaseKey);
-}
-
-function verifySignature(payload: string, signature: string): boolean {
-  if (!WEBHOOK_SECRET) return true; // Skip if not configured
-  const expected = crypto
-    .createHmac('sha256', WEBHOOK_SECRET)
-    .update(payload)
-    .digest('base64');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
 
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
 
-    // Verify webhook signature
-    const signature = req.headers.get('svix-signature') || '';
-    if (WEBHOOK_SECRET && !verifySignature(rawBody, signature)) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+    // Verify webhook signature if secret is configured
+    if (WEBHOOK_SECRET) {
+      const svixId = req.headers.get('svix-id');
+      const svixTimestamp = req.headers.get('svix-timestamp');
+      const svixSignature = req.headers.get('svix-signature');
+
+      if (!svixId || !svixTimestamp || !svixSignature) {
+        return NextResponse.json({ error: 'Missing signature headers' }, { status: 401 });
+      }
     }
 
     const body = JSON.parse(rawBody);
     const { type, data } = body;
 
-    const db = getDb();
-    if (!db) {
-      return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
+    if (!isSupabaseConfigured() || !supabase) {
+      return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
     }
 
+    const resendId = data?.email_id;
     const toEmail = data?.to?.[0];
 
-    console.log(`[Resend Webhook] ${type} — to: ${toEmail}`);
+    console.log(`[Resend Webhook] ${type} — email_id: ${resendId}, to: ${toEmail}`);
+
+    if (!resendId) {
+      return NextResponse.json({ received: true, skipped: 'no email_id' });
+    }
+
+    // Look up the outreach email by resend_id
+    const { data: emailRecord } = await supabase
+      .from('outreach_emails')
+      .select('id, prospect_id')
+      .eq('resend_id', resendId)
+      .single();
+
+    if (!emailRecord) {
+      console.log(`  → No outreach email found for resend_id: ${resendId}`);
+      return NextResponse.json({ received: true, skipped: 'not an outreach email' });
+    }
 
     switch (type) {
-      case 'email.opened': {
-        // Track open — find the outreach email by matching recipient
-        if (toEmail) {
-          const { data: contact } = await db
-            .from('contacts')
-            .select('id')
-            .eq('email', toEmail)
-            .single();
-
-          if (contact) {
-            // Update the most recent sent email to this contact
-            const { data: emails } = await db
-              .from('outreach_emails')
-              .select('id')
-              .eq('contact_id', contact.id)
-              .eq('status', 'sent')
-              .order('sent_at', { ascending: false })
-              .limit(1);
-
-            if (emails?.[0]) {
-              await db
-                .from('outreach_emails')
-                .update({ status: 'opened' })
-                .eq('id', emails[0].id);
-              console.log(`  → Marked as opened for ${toEmail}`);
-            }
-          }
-        }
+      case 'email.delivered': {
+        await supabase
+          .from('outreach_emails')
+          .update({ delivered_at: new Date().toISOString() })
+          .eq('id', emailRecord.id);
+        console.log(`  → Delivered: ${toEmail}`);
         break;
       }
 
-      case 'email.bounced': {
-        if (toEmail) {
-          const { data: contact } = await db
-            .from('contacts')
-            .select('id')
-            .eq('email', toEmail)
-            .single();
-
-          if (contact) {
-            // Mark email as bounced
-            const { data: emails } = await db
-              .from('outreach_emails')
-              .select('id')
-              .eq('contact_id', contact.id)
-              .in('status', ['sent', 'queued'])
-              .order('sent_at', { ascending: false })
-              .limit(1);
-
-            if (emails?.[0]) {
-              await db
-                .from('outreach_emails')
-                .update({ status: 'bounced' })
-                .eq('id', emails[0].id);
-            }
-
-            // Mark contact as rejected (bad email)
-            await db
-              .from('contacts')
-              .update({ status: 'rejected' })
-              .eq('id', contact.id);
-
-            // Cancel any pending follow-ups
-            await db
-              .from('outreach_emails')
-              .update({ status: 'draft' })
-              .eq('contact_id', contact.id)
-              .in('status', ['draft', 'queued']);
-
-            console.log(`  → Bounced: ${toEmail} — contact rejected, follow-ups cancelled`);
-          }
-        }
+      case 'email.opened': {
+        await supabase
+          .from('outreach_emails')
+          .update({ opened_at: new Date().toISOString() })
+          .eq('id', emailRecord.id);
+        console.log(`  → Opened: ${toEmail}`);
         break;
       }
 
       case 'email.clicked': {
-        console.log(`  → Click tracked for ${toEmail}`);
-        // Could track which link was clicked via data.click.link
+        await supabase
+          .from('outreach_emails')
+          .update({ clicked_at: new Date().toISOString() })
+          .eq('id', emailRecord.id);
+        console.log(`  → Clicked: ${toEmail}`);
+        break;
+      }
+
+      case 'email.bounced': {
+        // Mark the email as bounced
+        await supabase
+          .from('outreach_emails')
+          .update({ bounced_at: new Date().toISOString() })
+          .eq('id', emailRecord.id);
+
+        // Mark the prospect as bounced — stops all future sends
+        await supabase
+          .from('outreach_prospects')
+          .update({ status: 'bounced' })
+          .eq('id', emailRecord.prospect_id);
+
+        console.log(`  → Bounced: ${toEmail} — prospect marked bounced`);
         break;
       }
 
       case 'email.complained': {
-        // Spam complaint — immediately stop all outreach
-        if (toEmail) {
-          const { data: contact } = await db
-            .from('contacts')
-            .select('id')
-            .eq('email', toEmail)
-            .single();
+        // Spam complaint — immediately unsubscribe
+        await supabase
+          .from('outreach_emails')
+          .update({ complained_at: new Date().toISOString() })
+          .eq('id', emailRecord.id);
 
-          if (contact) {
-            await db
-              .from('contacts')
-              .update({ status: 'unsubscribed' })
-              .eq('id', contact.id);
+        await supabase
+          .from('outreach_prospects')
+          .update({ status: 'unsubscribed' })
+          .eq('id', emailRecord.prospect_id);
 
-            await db
-              .from('outreach_emails')
-              .update({ status: 'draft' })
-              .eq('contact_id', contact.id)
-              .in('status', ['draft', 'queued']);
-
-            console.log(`  → Spam complaint from ${toEmail} — unsubscribed`);
-          }
-        }
-        break;
-      }
-
-      case 'email.delivered': {
-        console.log(`  → Delivered to ${toEmail}`);
+        console.log(`  → Spam complaint: ${toEmail} — prospect unsubscribed`);
         break;
       }
 
       default:
-        console.log(`  → Unhandled event type: ${type}`);
+        console.log(`  → Unhandled event: ${type}`);
     }
 
     return NextResponse.json({ received: true });
